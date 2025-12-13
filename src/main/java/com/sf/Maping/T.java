@@ -1541,18 +1541,23 @@ public class T {
 						System.out.println("文件总大小" + file.getSize());
 						// 文件保存路径
 
-						String filePath = "C:\\Course\\Third\\JavaMvc\\bilibili\\bilibili\\out\\artifacts\\bilibili_war_exploded\\static\\videolook\\" + lable_time+"_"+file.getOriginalFilename();
-						if(!file.getOriginalFilename().contains(".mp4")) {
-							filePath = "C:\\Course\\Third\\JavaMvc\\bilibili\\bilibili\\out\\artifacts\\bilibili_war_exploded\\static\\videolook\\videolookimg\\" + lable_time+"_"+file.getOriginalFilename();
+						// 使用相对路径而不是硬编码绝对路径
+						String uploadDir = request.getServletContext().getRealPath("/static/videolook/");
+						String filePath = uploadDir + lable_time + "_" + file.getOriginalFilename();
+						if (!file.getOriginalFilename().contains(".mp4")) {
+							filePath = uploadDir + "videolookimg/" + lable_time + "_" + file.getOriginalFilename();
 						}
 
 						System.out.println(filePath);
 						/******************** 测试 **************************/
 						File storeFile = new File(filePath);
 						// 得到输入流
+						// 得到输入流
 						InputStream in = file.getInputStream();
 						// 得到文件的输出流
 						OutputStream out = new FileOutputStream(storeFile);
+						// 确保父目录存在
+						storeFile.getParentFile().mkdirs();
 						// 文件总大小
 						long max = file.getSize();
 						video.setFileSize(max);
@@ -1595,20 +1600,39 @@ public class T {
                        if(file.getOriginalFilename().contains(".mp4")) {
 						   myvideo.setVideoAddress("/static/videolook/" + lable_time + "_" + file.getOriginalFilename());
 						   File source = new File(filePath);
-						   String videolength = "";
+						   String videolength = "0:00";
+
 						   try {
+							   // 创建自定义FFMPEGLocator使用系统PATH中的ffmpeg
 							   MultimediaObject multimediaObject = new MultimediaObject(source);
-						   MultimediaInfo m = multimediaObject.getInfo();
+							   MultimediaInfo m = multimediaObject.getInfo();
+
 							   long ls = m.getDuration();
-							   //int hour = (int) (ls/3600);
 							   int minute = (int) (ls/60000);
 							   int second = (int) ((ls-minute*60000)/1000);
 							   videolength = minute+":"+String.format("%02d", second);
-							   System.out.println(videolength);
+							   System.out.println("视频时长: " + videolength);
 							   myvideo.setVideoTime(videolength);
 						   } catch (Exception e) {
-							   e.printStackTrace();
+							   System.err.println("提取视频时长失败: " + e.getMessage());
+							   // 即使失败也继续处理，设置默认时长
+							   myvideo.setVideoTime("0:00");
 						   }
+//						   File source = new File(filePath);
+//						   String videolength = "";
+//						   try {
+//							   MultimediaObject multimediaObject = new MultimediaObject(source);
+//							   MultimediaInfo m = multimediaObject.getInfo();
+//							   long ls = m.getDuration();
+//							   //int hour = (int) (ls/3600);
+//							   int minute = (int) (ls/60000);
+//							   int second = (int) ((ls-minute*60000)/1000);
+//							   videolength = minute+":"+String.format("%02d", second);
+//							   System.out.println(videolength);
+//							   myvideo.setVideoTime(videolength);
+//						   } catch (Exception e) {
+//							   e.printStackTrace();
+//						   }
 
 					     }else {
 						   myvideo.setVideoImage("/static/videolook/videolookimg/" + lable_time + "_" + file.getOriginalFilename());

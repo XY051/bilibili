@@ -110,6 +110,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<br> <a href="User_full_information.sf" style="color: red">个人信息</a>&nbsp;&nbsp;<a
 							href="Update_login_password.sf" style="color: red">修改密码</a>&nbsp;&nbsp;<a
 							href="User_full_information.sf" style="color: red">修改头像</a><br>
+						<%
+						    String userName = (String) request.getSession().getAttribute("userName");
+						    if ("admin".equals(userName)) {
+						%>
+						    <br><a href="Houtai.sf" style="color: blue">后台管理</a><br>
+						<%
+						    }
+						%>
 						<div style="background-color: black">------------------------</div>
 						<br> <a href="exect.sf" style="margin-left: 23%">切换用户</a>
 					</div>

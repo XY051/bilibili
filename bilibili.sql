@@ -189,6 +189,7 @@ CREATE TABLE `message` (
   `messageTime` varchar(32) NOT NULL,
   `messageHand` text NOT NULL,
   `messageuser_id` varchar(50) DEFAULT NULL,
+  `is_check` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`messageID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
