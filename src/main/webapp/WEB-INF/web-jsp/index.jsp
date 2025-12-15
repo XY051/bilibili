@@ -50,8 +50,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<ul>
 						<li class="item item-home"><a href="index.sf">主站</a></li>
 						<!-- <li class="item"><a href="Shopping.sf">周边</a></li> -->
-						<li class="item">
 						<li class="item"><a href="videoFileTop">我要投稿</a>
+						</li>
 						<li class="item"></li>
 						<li class="item"><a style="height: 0px;"><form  action="searchResult.sf" method="post"><input placeholder="输入搜索的关键字" style="margin-right:5px;line-height: 42px; height: 1.7em;border-radius:4px;border: 1px solid #fff;padding: 0 12px;color: #fff;font-size: 12px;" type="text" name="keyword" value=""><input style="border-radius:4px;border: 1px solid #fff;text-align: center;padding: 0 12px;color: #fff;font-size: 12px;" type="submit" value="搜索"></form></a></li>
 					</ul>
@@ -129,16 +129,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<script type="text/javascript">
             $(document).ready(function(){
             	$("#div2").hide();
+            });
            		 
-            })
-           		 function asjdh() {//移出
-		          	//alert("1");
-            		$("#div2").hide();
-		      	  }
-		        function project() {//移入
-		        	//alert("2");
-		        	$("#div2").show();
-		      	  }
+            function asjdh() {//移出
+	          	//alert("1");
+            	$("#div2").hide();
+	        }
+		    
+            function project() {//移入
+	        	//alert("2");
+	        	$("#div2").show();
+	        }
+			
+			function about() {
+				// 可以添加鼠标移出时的额外操作
+			}
             </script>
 		</div>
 	</div>
@@ -162,9 +167,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<li class="item"><a href="#" class="link">
 					<div class="num">
 						<i>${countdh}</i>
-					</div> 动漫
+					</div> 学习资源
 			</a></li>
-			<li class="item"><a href="#" class="link">
+			<%--<li class="item"><a href="#" class="link">
 					<div class="num">
 						<i>${countmad}</i>
 					</div> 影视
@@ -173,7 +178,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<div class="num">
 						<i>${countdm}</i>
 					</div> 音乐
-			</a></li>
+			</a></li>--%>
 			<%--<li class="item item-square"><a href="testshabi.sf" class="link">广场</a>--%>
 				<%--<div class="nav-square__hover">--%>
 					<%--<ul>--%>
@@ -250,7 +255,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<div class="pic-list fl" js-tab="true">
 					<div class="pic-list__title">
 						<i class="icon icon-dance"></i>
-						<h2>动漫</h2>
+						<h2>学习资源</h2>
 						<div class="tab-title">
 							<a href="#" class="cur">有新动态</a>
 
@@ -316,141 +321,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</div>
 			</div>
 
-			<!-- 游戏 -->
-			<div class="mainCont clearfix" id="game" js-move="true">
-				<div class="pic-list fl" js-tab="true">
-					<div class="pic-list__title">
-						<i class="icon icon-game"></i>
-						<h2>影视</h2>
-						<div class="tab-title">
-							<a href="#" class="cur">有新动态</a>
-						</div>
-						<div class="more-wrap">
-							<a  class="dynamic" id="shuaxin1"><i></i>更新动态</a>
-						</div>
-					</div>
-					<ul class="list2 pic-list__wrapper clearfix tab-cont__item tab-cont__cur">
-
-						<c:forEach items="${list2}" var="list2">
-							<li class="item"><a
-								href="video.sf?dizhi=${list2.videoAddress}&shipingID=${list2.videoID}"
-								class="img-link"> <img
-									src="<%=request.getContextPath()%>${list2.videoImage}" alt="#">
-									<span class="mask"></span> <span class="time">${list2.videoTime}</span>
-							</a>
-								<div class="img-info">
-									<a
-										href="video.sf?dizhi=${list2.videoAddress}&shipingID=${list2.videoID}">${list2.videoName }</a>
-									<div class="btm">
-										<div class="user">
-											<i></i>${list2.userMingzi}
-										</div>
-										<div class="online">
-											<i></i>${list2.videolookTime}</div>
-									</div>
-								</div></li>
-						</c:forEach>
-					</ul>
-				</div>
-				<div class="main-side fr" js-tab="true">
-					<div class="main-side__title">
-						<div class="rank-t">
-							<h3>最新</h3>
-						</div>
-						<div class="tab-title">
-							<a href="#" class="cur">最新动态</a>
-						</div>
-						<!-- 						<div class="side-select">
-							<span>三日</span> <i></i>
-						</div> -->
-					</div>
-					<div class="main-side__cont">
-						<div class="tab-cont">
-							<ul class="tab-cont__item main-rank" id="did3">
-
-							</ul>
-
-						</div>
-						<button type="button" class="more" id="chakan3">
-							查看更多<i></i>
-						</button>
-						<script type="text/javascript">
-									
-						
-						</script>
-					</div>
-				</div>
-			</div>
-
-			<!-- 科技 -->
-			<div class="mainCont clearfix" id="technology" js-move="true">
-				<div class="pic-list fl" js-tab="true">
-					<div class="pic-list__title">
-						<i class="icon icon-technology"></i>
-						<h2>音乐</h2>
-						<div class="tab-title">
-							<a href="#" class="cur">有新动态</a>
-						</div>
-						<div class="more-wrap">
-							<a  class="dynamic" id="shuaxin2"><i></i>刷新动态</a>
-						</div>
-					</div>
-					<ul class="list3 pic-list__wrapper clearfix tab-cont__item tab-cont__cur">
-
-						<c:forEach items="${list3}" var="list3">
-							<li class="item"><a
-								href="video.sf?dizhi=${list3.videoAddress}&shipingID=${list3.videoID}"
-								class="img-link"> <img
-									src="<%=request.getContextPath()%>${list3.videoImage}" alt="#">
-									<span class="mask"></span> <span class="time">${list3.videoTime}</span>
-							</a>
-								<div class="img-info">
-									<a
-										href="video.sf?dizhi=${list3.videoAddress}&shipingID=${list3.videoID}">${list3.videoName }</a>
-									<div class="btm">
-										<div class="user">
-											<i></i>${list3.userMingzi}
-										</div>
-										<div class="online">
-											<i></i>${list3.videolookTime}</div>
-									</div>
-								</div></li>
-						</c:forEach>
-					</ul>
-				</div>
-				<div class="main-side fr" js-tab="true">
-					<div class="main-side__title">
-						<div class="rank-t">
-							<h3>最新动态</h3>
-						</div>
-						<div class="tab-title">
-							<a href="#" class="cur">最新动态</a>
-						</div>
-						<!-- <div class="side-select">
-							<span>三日</span> <i></i>
-						</div> -->
-					</div>
-					<div class="main-side__cont">
-						<div class="tab-cont">
-							<ul class="tab-cont__item main-rank" id=did4>
-
-							</ul>
-
-						</div>
-						<button type="button" class="more" id="chakan4">
-							查看更多<i></i>
-						</button>
-
-
-
-						<!-- 这里是AJAX 提交 后台刷新数据 -->
-						<script src="<%=request.getContextPath()%>/static/adminjs/adminjs.js"></script>
-					</div>
-				</div>
-			</div>
-
-
-
 		</div>
 	</div>
 
@@ -458,7 +328,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div id="sideBar">
 		<div class="sideBar-list">
 
-			<br> <a href="#">动漫</a> <a href="#">动画</a> <a href="#">番剧</a> <br>
+			<br> <a href="#">学习资源</a> <a href="#">教程</a> <a href="#">课程</a> <br>
 			<a href="#"><i></i>排序</a>
 		</div>
 		<br>
