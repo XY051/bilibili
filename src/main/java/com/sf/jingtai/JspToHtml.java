@@ -59,7 +59,8 @@ public class JspToHtml {
 	    	//http://119.23.216.18:8080/bilibili/logoone.sf
 	    	//http://127.0.0.1:888/bilibili/logoone.sf
 	        String url = "http://127.0.0.1:888/bilibili/logoone.sf";  
-	         writeHtml("X:/Users/F-she-father/Workspaces/Eclipse IDE/bilibili/src/main/webapp/static/adminjs/index.html",getHtmlCode(url,"utf-8"));  
+	         // 使用相对路径替换硬编码的绝对路径
+	         writeHtml("static/adminjs/index.html",getHtmlCode(url,"utf-8"));  
 	         	//c:/1/html/index.html
 	         //X:\Users\F-she-father\Workspaces\
 	         //Eclipse IDE\bilibili\src\main\webapp\static\adminjs

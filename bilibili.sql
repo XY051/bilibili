@@ -189,18 +189,18 @@ CREATE TABLE `message` (
   `messageTime` varchar(32) NOT NULL,
   `messageHand` text NOT NULL,
   `messageuser_id` varchar(50) DEFAULT NULL,
-  `is_check` varchar(50) DEFAULT NULL,
+  `is_check` TINYINT(1) DEFAULT 0,
   PRIMARY KEY (`messageID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of message
 -- ----------------------------
-INSERT INTO `message` VALUES ('0851151995ad4276b9bb2d62233e017a', '39', '004bcfc8d4bd407bb1a114785539006f', '老五', '11', '2021-05-11 12:55:16', '/static/userHand_Top/upload/gaoxiao.gif', null);
-INSERT INTO `message` VALUES ('0b7a324ea75a481682cd7c761c49f789', '20', '004bcfc8d4bd407bb1a114785539006f', '老五', '111', '2021-05-11 13:09:08', '/static/userHand_Top/upload/gaoxiao.gif', null);
-INSERT INTO `message` VALUES ('5cade67ec1a54dc7abe030b66103bc79', '26', '004bcfc8d4bd407bb1a114785539006f', 'admin', '11', '2021-05-11 12:41:37', '/static/userHand_Top/upload/gaoxiao.gif', null);
-INSERT INTO `message` VALUES ('bb56803443c84e7182c35be14cf01bc0', '39', '004bcfc8d4bd407bb1a114785539006f', '老五', '1', '2021-05-11 12:56:41', '/static/userHand_Top/upload/gaoxiao.gif', null);
-INSERT INTO `message` VALUES ('d2c43ea5ccf34c0e82f56ad9525c5bc0', '27', '004bcfc8d4bd407bb1a114785539006f', 'admin', '123', '2021-05-11 12:47:57', '/static/userHand_Top/upload/gaoxiao.gif', null);
+INSERT INTO `message` VALUES ('0851151995ad4276b9bb2d62233e017a', '39', '004bcfc8d4bd407bb1a114785539006f', '老五', '11', '2021-05-11 12:55:16', '/static/userHand_Top/upload/gaoxiao.gif', null, 0);
+INSERT INTO `message` VALUES ('0b7a324ea75a481682cd7c761c49f789', '20', '004bcfc8d4bd407bb1a114785539006f', '老五', '111', '2021-05-11 13:09:08', '/static/userHand_Top/upload/gaoxiao.gif', null, 0);
+INSERT INTO `message` VALUES ('5cade67ec1a54dc7abe030b66103bc79', '26', '004bcfc8d4bd407bb1a114785539006f', 'admin', '11', '2021-05-11 12:41:37', '/static/userHand_Top/upload/gaoxiao.gif', null, 0);
+INSERT INTO `message` VALUES ('bb56803443c84e7182c35be14cf01bc0', '39', '004bcfc8d4bd407bb1a114785539006f', '老五', '1', '2021-05-11 12:56:41', '/static/userHand_Top/upload/gaoxiao.gif', null, 0);
+INSERT INTO `message` VALUES ('d2c43ea5ccf34c0e82f56ad9525c5bc0', '27', '004bcfc8d4bd407bb1a114785539006f', 'admin', '123', '2021-05-11 12:47:57', '/static/userHand_Top/upload/gaoxiao.gif', null, 0);
 
 -- ----------------------------
 -- Table structure for ordertable

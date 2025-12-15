@@ -86,7 +86,7 @@ public class UploadServlet extends HttpServlet {
 		        // 构造临时路径来存储上传的文件
 		        // 这个路径相对当前应用的目录
 		        //	图片路径存放到 服务器 webapp下面
-		        String path="X:/Users/F-she-father/Workspaces/Eclipse IDE/bilibili/src/main/webapp";
+		        String path = getServletContext().getRealPath("/");
 
 		        String dizhi=	File.separator + UPLOAD_DIRECTORY;
 		        dizhi =  dizhi.replace("\\","/");
