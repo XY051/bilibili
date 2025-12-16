@@ -1,20 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-	<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+         pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%
-	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-			+ path + "/";
+    String path = request.getContextPath();
+    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+            + path + "/";
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<base href="<%=basePath%>">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<script
-	src="<%=request.getContextPath()%>/static/Homepage/js/jquery.min.js"></script>
+    <base href="<%=basePath%>">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script
+            src="<%=request.getContextPath()%>/static/Homepage/js/jquery.min.js"></script>
 
-	<link rel="stylesheet" href="<%=request.getContextPath()%>/static/Homepage/videoPlay/font/iconfont.css">
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/static/Homepage/videoPlay/font/iconfont.css">
     <script
             src="<%=request.getContextPath()%>/static/Homepage/js/bluebird.min.js"></script>
     <script type="text/javascript">
@@ -34,110 +34,110 @@
 
     </script>
 
-<link rel="stylesheet"
-	href="<%=request.getContextPath()%>/static/Homepage/video/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="<%=request.getContextPath()%>/static/Homepage/video/css/bootstrap.min.css">
 
-	<link rel="stylesheet"
-		  href="<%=request.getContextPath()%>/static/Homepage/video/css/dashboard.css">
-	<link rel="stylesheet"
-		  href="<%=request.getContextPath()%>/static/Homepage/video/css/popuo-box.css">
-
-
-	<link rel="stylesheet"
-		  href="<%=request.getContextPath()%>/static/Homepage/videoPlay/css/DPlayer.min.css">
-
-<style type="text/css">
-body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";background:#121212;}
-
-/* slider */
-.wp{position:relative;width:100%;height:600px;overflow:hidden;margin:20px auto;border:1px solid #121212;background:#fff;}
-
-.slider{position:absolute;width:760px;padding:0 20px;left:0;top:0;}
-.fl{float:left}
-.slider img{display:block;padding:2px;border:1px solid #ccc} 
-.slider li{padding:20px 0;border-bottom:1px dashed #ccc;overflow:hidden;width:100%}
-.slider p{font-size:12px;margin:0;padding-left:68px;color:#333;line-height:20px;}
-</style>
+    <link rel="stylesheet"
+          href="<%=request.getContextPath()%>/static/Homepage/video/css/dashboard.css">
+    <link rel="stylesheet"
+          href="<%=request.getContextPath()%>/static/Homepage/video/css/popuo-box.css">
 
 
-<style>
-body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code,
-	form, fieldset, legend, input, button, textarea, p, blockquote, th, td
-	{
-	margin: 0;
-	padding: 0;
-}
+    <link rel="stylesheet"
+          href="<%=request.getContextPath()%>/static/Homepage/videoPlay/css/DPlayer.min.css">
 
-body {
-	background: #fff;
-	color: #555;
-	font-size: 14px;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-}
+    <style type="text/css">
+        body{font:12px/180% Arial, Helvetica, sans-serif, "新宋体";background:#121212;}
 
-td, th, caption {
-	font-size: 14px;
-}
+        /* slider */
+        .wp{position:relative;width:100%;height:600px;overflow:hidden;margin:20px auto;border:1px solid #121212;background:#fff;}
 
-h1, h2, h3, h4, h5, h6 {
-	font-weight: normal;
-	font-size: 100%;
-}
+        .slider{position:absolute;width:760px;padding:0 20px;left:0;top:0;}
+        .fl{float:left}
+        .slider img{display:block;padding:2px;border:1px solid #ccc}
+        .slider li{padding:20px 0;border-bottom:1px dashed #ccc;overflow:hidden;width:100%}
+        .slider p{font-size:12px;margin:0;padding-left:68px;color:#333;line-height:20px;}
+    </style>
 
-address, caption, cite, code, dfn, em, strong, th, var {
-	font-style: normal;
-	font-weight: normal;
-}
 
-a {
-	color: #555;
-	text-decoration: none;
-}
+    <style>
+        body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code,
+        form, fieldset, legend, input, button, textarea, p, blockquote, th, td
+        {
+            margin: 0;
+            padding: 0;
+        }
 
-a:hover {
-	text-decoration: underline;
-}
+        body {
+            background: #fff;
+            color: #555;
+            font-size: 14px;
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+        }
 
-img {
-	border: none;
-}
+        td, th, caption {
+            font-size: 14px;
+        }
 
-ol, ul, li {
-	list-style: none;
-}
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: normal;
+            font-size: 100%;
+        }
 
-input, textarea, select, button {
-	font: 14px Verdana, Helvetica, Arial, sans-serif;
-}
+        address, caption, cite, code, dfn, em, strong, th, var {
+            font-style: normal;
+            font-weight: normal;
+        }
 
-table {
-	border-collapse: collapse;
-}
+        a {
+            color: #555;
+            text-decoration: none;
+        }
 
-html {
-	overflow-y: scroll;
-}
+        a:hover {
+            text-decoration: underline;
+        }
 
-.clearfix:after {
-	content: ".";
-	display: block;
-	height: 0;
-	clear: both;
-	visibility: hidden;
-}
+        img {
+            border: none;
+        }
 
-.clearfix {
-	*zoom: 1;
-}
+        ol, ul, li {
+            list-style: none;
+        }
 
-/*body{ font-family: "微软雅黑"; background-color: #292929; 	}*/
+        input, textarea, select, button {
+            font: 14px Verdana, Helvetica, Arial, sans-serif;
+        }
 
-</style>
+        table {
+            border-collapse: collapse;
+        }
+
+        html {
+            overflow-y: scroll;
+        }
+
+        .clearfix:after {
+            content: ".";
+            display: block;
+            height: 0;
+            clear: both;
+            visibility: hidden;
+        }
+
+        .clearfix {
+            *zoom: 1;
+        }
+
+        /*body{ font-family: "微软雅黑"; background-color: #292929; 	}*/
+
+    </style>
     <style>
         .Dplayer_box{overflow:hidden;width:980px;height:456px;margin:100px auto;display:block;border-top:1px solid #e5e9ef;border-bottom:1px solid #e5e9ef;background-color:#f6f9fa}#player1{background-size:100% 100%;margin-top:30px}.player_av{width:680px;height:100%;float:left;background:#000}.Dplayer_danmu{width:299px;float:right;height:100%}.Dplayer_watching{width:100%;height:60px;line-height:60px;display:inline-block;font-size:12px;color:#99a2aa;box-shadow:#ddd 0 0 5px}.Dplayer-watching-number{margin-left:20px;font-size:18px;font-weight:700;color:#222;padding:0}.Dplayer_list{width:100%;height:30px;overflow:hidden}.Dplayer_list li{width:60px;height:30px;float:left;color:#99a2aa;font-size:12px;text-align:center;line-height:30px}.Dplayer_list li:nth-child(1){width:58px!important}.Dplayer_list li:nth-child(2){width:136px!important}.list_ovefiow{width:100%;height:363px;overflow:auto}.danmuku_list{width:100%;height:20px;line-height:20px;text-align:left;color:#99a2aa;font-size:12px;display:block;margin:auto;overflow:auto;margin-top:5px}.danmuku_list li{float:left;width:60px;height:20px;white-space:nowrap;cursor:pointer}.danmuku_list li:nth-child(1){width:58px;margin-left:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.danmuku_list li:nth-child(2){width:125px;margin-right:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.danmuku_list li:nth-child(2):hover{color:#00a1d6}.danmuku_list li:nth-child(3){margin-left:5px}
     </style>
 
-<title>哔哩哔哩-视频区</title>
+    <title>哔哩哔哩-视频区</title>
 
     <link rel="stylesheet" href="<%=request.getContextPath()%>/static/Homepage/videoPlay/static/css/stardust-video.0.64b497703fccef5418339a77909e7a530175d7e6.css">
 
@@ -1036,56 +1036,56 @@ html {
 
 
 <div style="width: 100%;height: 40px;" >
-<div style="">
-		<div style="margin-left: 90%;">
-	 
-			<%
-				if (request.getSession().getAttribute("userName") == null) {
-			%>
-			<button class="btn btn-primary ladda-button" data-style="expand-left" id="login">
+    <div style="">
+        <div style="margin-left: 90%;">
+
+            <%
+                if (request.getSession().getAttribute("userName") == null) {
+            %>
+            <button class="btn btn-primary ladda-button" data-style="expand-left" id="login">
 				<span class="ladda-label"><a href="login.sf"
-					style="font-size: 10px; color: white; text-decoration: none" >登录</a></span>
-			</button>
+                                             style="font-size: 10px; color: white; text-decoration: none" >登录</a></span>
+            </button>
 
-			<button class="btn btn-primary ladda-button" data-style="expand-left" id="zhuce">
+            <button class="btn btn-primary ladda-button" data-style="expand-left" id="zhuce">
 				<span class="ladda-label"><a href="zhuce.sf"
-					style="font-size: 10px; color: white; text-decoration: none" >注册</a></span>
-			</button>
-			<%
-				} else {
-			%>
+                                             style="font-size: 10px; color: white; text-decoration: none" >注册</a></span>
+            </button>
+            <%
+            } else {
+            %>
 
 
-			<button class="btn btn-primary ladda-button" data-style="expand-left" id="userxinxi">
+            <button class="btn btn-primary ladda-button" data-style="expand-left" id="userxinxi">
 				<span class="ladda-label"><a href="User_full_information.sf"
-					style="font-size: 10px; color: white; text-decoration: none">
+                                             style="font-size: 10px; color: white; text-decoration: none">
 						个人中心： <span style="color: red"><%=request.getSession().getAttribute("userName")%></span>
 				</a></span>
-			</button>
+            </button>
 
 
-	
-			<%
-				}
-			%>
-		</div>
-		
-		
-	<script type="text/javascript">
-		$(document).ready(function(){
-			$("#userxinxi").click(function(){
-				location.href="User_full_information.sf";
-				
-			});
-			$("#login").click(function(){
-				location.href="login.sf";
-			});
-			$("#zhuce").click(function(){
-				location.href="zhuce.sf";
-			});
-		});
-	</script>
-	</div>
+
+            <%
+                }
+            %>
+        </div>
+
+
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $("#userxinxi").click(function(){
+                    location.href="User_full_information.sf";
+
+                });
+                $("#login").click(function(){
+                    location.href="login.sf";
+                });
+                $("#zhuce").click(function(){
+                    location.href="zhuce.sf";
+                });
+            });
+        </script>
+    </div>
 
 
 
@@ -1143,7 +1143,7 @@ html {
 
 
 <%--<div id="biliMainHeader" style="height:56px">--%>
-    <%--<!-- 头部导航位置 -->--%>
+<%--<!-- 头部导航位置 -->--%>
 <%--</div>--%>
 
 <div id="video-page-app">
@@ -1250,7 +1250,8 @@ html {
 	     			   	<span title="点赞" class="like"><i class="van-icon-videodetails_like" id="dz" style=""></i><span class="dzs">${videoEntity.supportcount}</span>
                        </span>
 
-                    <span title="收藏" class="collect"><canvas width="34" height="34" class="ring-progress" style="width:34px;height:34px;left:-3px;top:-3px;"></canvas><!----><i class="van-icon-videodetails_collec" style="color:;"></i>--
+                    <span title="收藏" class="collect"><canvas width="34" height="34" class="ring-progress" style="width:34px;height:34px;left:-3px;top:-3px;"></canvas><!----><i class="van-icon-videodetails_collec" style="color:   url: '<%=request.getContextPath()%><%=request.getAttribute("dizhi")%>'
+                            ;"></i>--
                       </span>
                     <span title="分享" class="share"><i class="van-icon-videodetails_share"></i>--
                        </span>
@@ -1626,23 +1627,23 @@ html {
 
                     <c:forEach items="${mytjlist}" var="myvideo">
 
-                    <div class="video-page-card">
-                        <div class="card-box">
-                            <div class="pic-box">
-                                <div class="pic"><a href="/bilibili/video.sf?dizhi=${myvideo.videoAddress}&shipingID=${myvideo.videoID}"><img src="<%=request.getContextPath()%>${myvideo.videoImage}"  width="168" height="95"></a><span class="mask-video"></span><span class="duration">${myvideo.videoTime}</span>
+                        <div class="video-page-card">
+                            <div class="card-box">
+                                <div class="pic-box">
+                                    <div class="pic"><a href="/bilibili/video.sf?dizhi=${myvideo.videoAddress}&shipingID=${myvideo.videoID}"><img src="<%=request.getContextPath()%>${myvideo.videoImage}"  width="168" height="95"></a><span class="mask-video"></span><span class="duration">${myvideo.videoTime}</span>
+                                    </div>
+                                    <div class="watch-later-video van-watchlater"><span class="wl-tips" style="display:none;"></span>
+                                    </div>
                                 </div>
-                                <div class="watch-later-video van-watchlater"><span class="wl-tips" style="display:none;"></span>
-                                </div>
-                            </div>
-                            <div class="info"><a href="/bilibili/video.sf?dizhi=${myvideo.videoAddress}&shipingID=${myvideo.videoID}" title="${myvideo.videoName}" class="title">${myvideo.videoName}</a>
-                                <div class="count up"><a href="/bilibili/user_info?user_id=${myvideo.user_id}" target="_blank">${myvideo.userMingzi}</a>
-                                </div>
-                                <div class="count">
-                                    ${myvideo.uploadtime}
+                                <div class="info"><a href="/bilibili/video.sf?dizhi=${myvideo.videoAddress}&shipingID=${myvideo.videoID}" title="${myvideo.videoName}" class="title">${myvideo.videoName}</a>
+                                    <div class="count up"><a href="/bilibili/user_info?user_id=${myvideo.user_id}" target="_blank">${myvideo.userMingzi}</a>
+                                    </div>
+                                    <div class="count">
+                                            ${myvideo.uploadtime}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
 
                     </c:forEach>
@@ -1651,7 +1652,7 @@ html {
 
 
 
-                  </div>
+                </div>
 
 
                 <div class="rec-footer" style=";">展开</div></div>
@@ -1729,26 +1730,26 @@ html {
 
 
 <%--<div class="Dplayer_box" style="margin-bottom: 2px;margin-top: 30px">--%>
-	<%--<div class="player_av">--%>
-		<%--<div id="player1"></div>--%>
-	<%--</div>--%>
+<%--<div class="player_av">--%>
+<%--<div id="player1"></div>--%>
+<%--</div>--%>
 
-	<%--<div class="Dplayer_danmu">--%>
-		<%--<div class="Dplayer_watching">--%>
-			<%--<span class="Dplayer-watching-number" title="这个数据是假的">24</span>--%>
-			<%--人正在观看,<span class="danmuku_num">100</span>条弹幕--%>
-		<%--</div>--%>
+<%--<div class="Dplayer_danmu">--%>
+<%--<div class="Dplayer_watching">--%>
+<%--<span class="Dplayer-watching-number" title="这个数据是假的">24</span>--%>
+<%--人正在观看,<span class="danmuku_num">100</span>条弹幕--%>
+<%--</div>--%>
 
-		<%--<ul class="Dplayer_list">--%>
-			<%--<li>时间</li>--%>
-			<%--<li>发送内容</li>--%>
-			<%--<li>用户类型</li>--%>
-		<%--</ul>--%>
-		<%--<ul class="list_ovefiow">--%>
+<%--<ul class="Dplayer_list">--%>
+<%--<li>时间</li>--%>
+<%--<li>发送内容</li>--%>
+<%--<li>用户类型</li>--%>
+<%--</ul>--%>
+<%--<ul class="list_ovefiow">--%>
 
-		<%--</ul>--%>
+<%--</ul>--%>
 
-	<%--</div>--%>
+<%--</div>--%>
 <%--</div>--%>
 
 
@@ -1839,204 +1840,206 @@ html {
 
 
 
-	<script>
+<script>
 
 
 
-        $(".follow-btn").click(function(){
-            //$("p").slideToggle();
-            $.ajax({
-                url:"/bilibili/follow/",
-                type:'POST',
-                dataType:"json",
-                data:{'auth_id':'${auth.userID}'},
-                success:function (data) {
-                    if(data != undefined && data != null) {
-                        var flag = data.praiseflag;  // 1已点过赞
-                        if(flag == 0){
-                            $(".guanzhu").html("已关注");
-                            $('.follow-btn').css("color","#999");
-                            $('.follow-btn').css("background","#e7e7e7");
-                        }else if(flag == 1){
+    $(".follow-btn").click(function(){
+        //$("p").slideToggle();
+        $.ajax({
+            url:"/bilibili/follow/",
+            type:'POST',
+            dataType:"json",
+            data:{'auth_id':'${auth.userID}'},
+            success:function (data) {
+                if(data != undefined && data != null) {
+                    var flag = data.praiseflag;  // 1已点过赞
+                    if(flag == 0){
+                        $(".guanzhu").html("已关注");
+                        $('.follow-btn').css("color","#999");
+                        $('.follow-btn').css("background","#e7e7e7");
+                    }else if(flag == 1){
 
-                            $(".guanzhu").html("关注");
-                            $('.follow-btn').css("color","#fff");
-                            $('.follow-btn').css("background","#00a1d6");
-                        }else if(flag==2){
-                            alert("请您先登录");
-                        }
-
+                        $(".guanzhu").html("关注");
+                        $('.follow-btn').css("color","#fff");
+                        $('.follow-btn').css("background","#00a1d6");
+                    }else if(flag==2){
+                        alert("请您先登录");
                     }
 
                 }
-            })
 
-        });
-
-
-        $(".van-icon-videodetails_like").click(function(){
-            //$("p").slideToggle();
-            $.ajax({
-                url:"/bilibili/dianzhan/",
-                type:'POST',
-                dataType:"json",
-                data:{'video_id':'<%=request.getAttribute("shipingID")%>'},
-                success:function (data) {
-                    if(data != undefined && data != null) {
-                        var flag = data.praiseflag;  // 1已点过赞
-                        if(flag == 0){
-                            $(".dzs").html(${videoEntity.supportcount}+1);
-                            $('.van-icon-videodetails_like').css("color","#FFC0CB");
-                        }else if(flag == 1){
-                            $(".dzs").html(${videoEntity.supportcount});
-
-                            $('.van-icon-videodetails_like').css("color","#757575");
-                        }else if(flag==2){
-                            alert("请您先登录");
-                        }
-
-                    }
-
-                }
+            }
         })
 
-        });
+    });
 
 
+    $(".van-icon-videodetails_like").click(function(){
+        //$("p").slideToggle();
+        $.ajax({
+            url:"/bilibili/dianzhan/",
+            type:'POST',
+            dataType:"json",
+            data:{'video_id':'<%=request.getAttribute("shipingID")%>'},
+            success:function (data) {
+                if(data != undefined && data != null) {
+                    var flag = data.praiseflag;  // 1已点过赞
+                    if(flag == 0){
+                        $(".dzs").html(${videoEntity.supportcount}+1);
+                        $('.van-icon-videodetails_like').css("color","#FFC0CB");
+                    }else if(flag == 1){
+                        $(".dzs").html(${videoEntity.supportcount});
 
-
-
-        $(".collect").click(function(){
-            //$("p").slideToggle();
-            $.ajax({
-                url:"/bilibili/shouchang/",
-                type:'POST',
-                dataType:"json",
-                data:{'video_id':'<%=request.getAttribute("shipingID")%>'},
-                success:function (data) {
-                    if(data != undefined && data != null) {
-                        var flag = data.praiseflag;  // 1已点过赞
-                        if(flag == 0){
-                            $('.collect').addClass("on");
-
-                        }else if(flag == 1){
-
-                            $('.collect'). removeClass("on");
-                        }else if(flag==2){
-                            alert("请您先登录");
-                        }
-
+                        $('.van-icon-videodetails_like').css("color","#757575");
+                    }else if(flag==2){
+                        alert("请您先登录");
                     }
 
                 }
-            })
 
-        });
+            }
+        })
 
-
-
-
+    });
 
 
 
 
 
+    $(".collect").click(function(){
+        //$("p").slideToggle();
+        $.ajax({
+            url:"/bilibili/shouchang/",
+            type:'POST',
+            dataType:"json",
+            data:{'video_id':'<%=request.getAttribute("shipingID")%>'},
+            success:function (data) {
+                if(data != undefined && data != null) {
+                    var flag = data.praiseflag;  // 1已点过赞
+                    if(flag == 0){
+                        $('.collect').addClass("on");
+
+                    }else if(flag == 1){
+
+                        $('.collect'). removeClass("on");
+                    }else if(flag==2){
+                        alert("请您先登录");
+                    }
+
+                }
+
+            }
+        })
+
+    });
 
 
 
-        console.log(" %c 该项目基于Dplayer.js",'color:red')
-        var dp = new DPlayer({
-            element: document.getElementById('player1'),
-            video: {
 
-                url: '/bilibili<%=request.getAttribute("dizhi")%>',
-                pic: '',
 
-            },
-            danmaku: {
-                id: '<%=request.getAttribute("shipingID")%>',
 
-                api:"/bilibili/insertdanmu/",
 
-                /* api: 'http://127.0.0.1:8000/get_dm',*/
-                addition: ['/bilibili/insertdanmu/']
+
+
+
+
+
+    console.log(" %c 该项目基于Dplayer.js",'color:red')
+    var dp = new DPlayer({
+        element: document.getElementById('player1'),
+        video: {
+
+            url: '<%=request.getContextPath()%><%=request.getAttribute("dizhi")%>',
+            pic: '',
+
+        },
+        danmaku: {
+            id: '<%=request.getAttribute("shipingID")%>',
+
+            api:"<%=request.getContextPath()%>/insertdanmu/",
+
+            /* api: 'http://127.0.0.1:8000/get_dm',*/
+            addition: ['<%=request.getContextPath()%>/insertdanmu/']
+        }
+    });
+
+    dp.danmaku.opacity(1);
+
+
+    function alert_back(text) {
+        $(".alert_back").html(text).show();
+        setTimeout(function () {
+            $(".alert_back").fadeOut();
+        },1200)
+    }
+    //秒转分秒
+    function formatTime(seconds) {
+        return [
+//            parseInt(seconds / 60 / 60),
+            parseInt(seconds / 60 % 60),
+            parseInt(seconds % 60)
+        ]
+            .join(":")
+            .replace(/\b(\d)\b/g, "0$1");
+    }
+    $(document).ready(function(){
+
+        <c:if test="${isdianzhan==1 }">
+        $('.van-icon-videodetails_like').css("color","#FFC0CB");
+        </c:if>
+
+        <c:if test="${isguanzhu==1 }">
+        $(".guanzhu").html("已关注");
+        $('.follow-btn').css("color","#999");
+        $('.follow-btn').css("background","#e7e7e7");
+        </c:if>
+
+        <c:if test="${isshouchang==1 }">
+
+        $('.collect').addClass("on");
+        </c:if>
+
+
+        $.ajax({
+            url:"<%=request.getContextPath()%>/insertdanmu/v3/",
+            type:'GET',
+            data:{'id':'<%=request.getAttribute("shipingID")%>'},
+            success:function (data) {
+                var obj=JSON.parse(data);
+                console.log("ok");
+                console.log(data);
+                //alert(obj.data)
+                if(obj.code==0){
+                    var danmaku=obj.data;
+                    //ddd=obj.data;
+                    //console.log(dd)
+                    var autor="普通用户";
+                    $(".danmuku_num").text(danmaku.length)
+                    $(danmaku).each(function (index,item) {
+                        console.log(item)
+                        if(item[1]){
+                        }else
+                        {
+                            autor="普通用户"
+                        }
+                        var oLi=`<ol class="danmuku_list" time="${item.time}"><li>`+formatTime(item[0])+`</li><li title="`+item[4]+`">`+item[4]+`</li><li>`+autor+`</li></ol>`
+                        $(".list_ovefiow").append(oLi);
+                        autor="普通用户";
+                    })
+                }else {
+                    alert_back("弹幕加载失败 -v-!");
+                }
+                $(".danmuku_list").click(function () {
+
+                    dp.seek( $(this).attr("time"))
+                });
             }
         });
 
-        dp.danmaku.opacity(1);
 
 
-        function alert_back(text) {
-            $(".alert_back").html(text).show();
-            setTimeout(function () {
-                $(".alert_back").fadeOut();
-            },1200)
-        }
-        //秒转分秒
-        function formatTime(seconds) {
-            return [
-//            parseInt(seconds / 60 / 60),
-                parseInt(seconds / 60 % 60),
-                parseInt(seconds % 60)
-            ]
-                .join(":")
-                .replace(/\b(\d)\b/g, "0$1");
-        }
-        $(document).ready(function(){
-
-            <c:if test="${isdianzhan==1 }">
-              $('.van-icon-videodetails_like').css("color","#FFC0CB");
-            </c:if>
-
-            <c:if test="${isguanzhu==1 }">
-            $(".guanzhu").html("已关注");
-            $('.follow-btn').css("color","#999");
-            $('.follow-btn').css("background","#e7e7e7");
-            </c:if>
-
-            <c:if test="${isshouchang==1 }">
-
-            $('.collect').addClass("on");
-            </c:if>
-
-
-            $.ajax({
-                url:"/bilibili/insertdanmu/v3/",
-                type:'GET',
-                data:{'id':'<%=request.getAttribute("shipingID")%>'},
-                success:function (data) {
-                    var obj=JSON.parse(data);
-                    //alert(obj.data)
-                    if(obj.code==0){
-                        var danmaku=obj.data;
-                        //ddd=obj.data;
-                        //console.log(dd)
-                        var autor="普通用户";
-                        $(".danmuku_num").text(danmaku.length)
-                        $(danmaku).each(function (index,item) {
-                            console.log(item)
-                            if(item[1]){
-                            }else
-                            {
-                                autor="普通用户"
-                            }
-                            var oLi=`<ol class="danmuku_list" time="${item.time}"><li>`+formatTime(item[0])+`</li><li title="`+item[4]+`">`+item[4]+`</li><li>`+autor+`</li></ol>`
-                            $(".list_ovefiow").append(oLi);
-                            autor="普通用户";
-                        })
-                    }else {
-                        alert_back("弹幕加载失败 -v-!");
-                    }
-                    $(".danmuku_list").click(function () {
-
-                        dp.seek( $(this).attr("time"))
-                    });
-                }
-            });
-
-
-
-		});
+    });
 
 
 
@@ -2045,12 +2048,12 @@ html {
 
 
 
-	</script>
+</script>
 
 <%--<link rel="stylesheet"--%>
-      <%--href="<%=request.getContextPath()%>/static/Homepage/video/css/style.css">--%>
+<%--href="<%=request.getContextPath()%>/static/Homepage/video/css/style.css">--%>
 
-	<!-- 评论区 -->
+<!-- 评论区 -->
 
 </body>
 </html>
