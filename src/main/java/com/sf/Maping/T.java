@@ -80,38 +80,38 @@ public class T {
 	// 将数据库里面所有的视频查询出来 发送到首页面
 	@RequestMapping("logoone.sf")
 	public ModelAndView logoone(HttpServletRequest request,HttpServletResponse response) {
-		int countdh=videoserviceimpl.videotypecount(1);
-		int countmad=videoserviceimpl.videotypecount(2);
-		int countdm=videoserviceimpl.videotypecount(3);
-		List<videoEntity> videoEntityList = userListServiceImpl.videolist("1");// 1 为动画mad
+		int countJava=videoserviceimpl.videotypecount(1);
+		int countCpp=videoserviceimpl.videotypecount(2);
+		int countPython=videoserviceimpl.videotypecount(3);
+		List<videoEntity> videoEntityList = userListServiceImpl.videolist("1");// 1 为Java
 		Map model = new HashMap();
-		List<videoPushEntity> list=new ArrayList<>();
+		List<videoPushEntity> listJava=new ArrayList<>();
 		for(videoEntity video:videoEntityList){
 			userEntity user=userListServiceImpl.userseachByUserid(video.getUser_id());
 			videoPushEntity videoPush=new videoPushEntity(video,user.getUserMingzi());
-			list.add(videoPush);
+			listJava.add(videoPush);
 		}
 
-		model.put("list", list);
+		model.put("list", listJava);
 
-		List<videoEntity> videoEntityList2 = userListServiceImpl.videolist("2");// 2
-		List<videoPushEntity> list2=new ArrayList<>();
+		List<videoEntity> videoEntityList2 = userListServiceImpl.videolist("2");// 2 为C++
+		List<videoPushEntity> listCpp=new ArrayList<>();
 		for(videoEntity video:videoEntityList2){
 			userEntity user=userListServiceImpl.userseachByUserid(video.getUser_id());
 			videoPushEntity videoPush=new videoPushEntity(video,user.getUserMingzi());
-			list2.add(videoPush);
+			listCpp.add(videoPush);
 		}
 
-		model.put("list2", list2);
-		List<videoEntity> videoEntityList3 = userListServiceImpl.videolist("3");// 3
-		List<videoPushEntity> list3=new ArrayList<>();
+		model.put("list2", listCpp);
+		List<videoEntity> videoEntityList3 = userListServiceImpl.videolist("3");// 3 为Python
+		List<videoPushEntity> listPython=new ArrayList<>();
 		for(videoEntity video:videoEntityList3){
 			userEntity user=userListServiceImpl.userseachByUserid(video.getUser_id());
 			videoPushEntity videoPush=new videoPushEntity(video,user.getUserMingzi());
-			list3.add(videoPush);
+			listPython.add(videoPush);
 		}
 
-		model.put("list3", list3);
+		model.put("list3", listPython);
 		// 随机查6条数据出来
 		List<videoEntity> fuck=videoserviceimpl.searchVidetoptj(0,6);
 
@@ -137,9 +137,9 @@ public class T {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
-		model.put("countdh", countdh);
-		model.put("countmad", countmad);
-		model.put("countdm", countdm);
+		model.put("countdh", countJava);
+		model.put("countmad", countCpp);
+		model.put("countdm", countPython);
 
 		return new ModelAndView("index", model);
 
@@ -1073,20 +1073,24 @@ public class T {
 		}
 
         List<MessgaeShow> messgaeShows=new ArrayList<>();
-        for (messageEntity mess:messageEntities){
-            MessgaeShow messgaeShow=new MessgaeShow();
-            messgaeShow.setMessage(mess.getMessage());
-            messgaeShow.setMessageID(mess.getMessageID());
-            messgaeShow.setMessageuserID(mess.getMessageuserID());
-            userEntity u=userListServiceImpl.userseachByUserid(mess.getMessageuserID());
-            messgaeShow.setMessageuserName(u.getUserMingzi());
-            videoEntity v1=videoserviceimpl.readVideoByVid(Integer.parseInt(mess.getMessagevideoID())).get(0);
-            messgaeShow.setAddress(v1.getVideoAddress());
-            //System.out.println(messgaeShow.getVideoAddress());
-            messgaeShow.setVideoName(v1.getVideoName());
-            messgaeShow.setMessagevideoID(v1.getVideoID()+"");
-            messgaeShows.add(messgaeShow);
-
+        if(messageEntities != null && !messageEntities.isEmpty()){
+            for (messageEntity mess:messageEntities){
+                MessgaeShow messgaeShow=new MessgaeShow();
+                messgaeShow.setMessage(mess.getMessage());
+                messgaeShow.setMessageID(mess.getMessageID());
+                messgaeShow.setMessageuserID(mess.getMessageuserID());
+                userEntity u=userListServiceImpl.userseachByUserid(mess.getMessageuserID());
+                messgaeShow.setMessageuserName(u.getUserMingzi());
+                List<videoEntity> videoList = videoserviceimpl.readVideoByVid(Integer.parseInt(mess.getMessagevideoID()));
+                if(videoList != null && !videoList.isEmpty()) {
+                    videoEntity v1 = videoList.get(0);
+                    messgaeShow.setAddress(v1.getVideoAddress());
+                    //System.out.println(messgaeShow.getVideoAddress());
+                    messgaeShow.setVideoName(v1.getVideoName());
+                    messgaeShow.setMessagevideoID(v1.getVideoID()+"");
+                    messgaeShows.add(messgaeShow);
+                }
+            }
         }
         model.put("messages", messgaeShows);
 		return new ModelAndView("Houtai", model);
@@ -1502,9 +1506,7 @@ public class T {
 		myvideo.setVideoName(biaoti);
 		myvideo.setVideocAtegory(Fruit);
 		myvideo.setVideodetail(miaoshu);
-		// Encoder encoder = new Encoder();
 
-        //response.setCharacterEncoding("UTF-8");
         try {
             request.setCharacterEncoding("UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -1516,7 +1518,6 @@ public class T {
         myvideo.setUser_id(user_id);
         myvideo.setIscheck(0);
         myvideo.setIspass(0);
-        //myvideo.setVideolookTime("0");
 		if (files != null && files.length > 0) {
 			// 循环获取file数组中得文件
 			for (int i = 0; i < files.length; i++) {
@@ -1524,70 +1525,59 @@ public class T {
 				Long timelable = System.currentTimeMillis();
 				String lable_time=timelable+"";
 
-
-				//myvideo.set
 				// 保存文件
 				System.out.println("正在调用保存方法");
-				// saveFile(file);
 				// 判断文件是否为空
 				if (!file.isEmpty()) {
 					try {
-
 						// new 出一个实体
 						videoTopEntity video = new videoTopEntity();
 						// 放入session中
 						request.getSession().setAttribute("video", video);// 放入到session中
 
 						System.out.println("文件总大小" + file.getSize());
-						// 文件保存路径
-
-						// 使用相对路径而不是硬编码绝对路径
+						// 文件保存路径 - 使用ServletContext动态获取路径，确保可移植性
 						String uploadDir = request.getServletContext().getRealPath("/static/videolook/");
 						String filePath = uploadDir + lable_time + "_" + file.getOriginalFilename();
+						// 如果不是MP4视频文件，则保存到封面图片目录
 						if (!file.getOriginalFilename().contains(".mp4")) {
 							filePath = uploadDir + "videolookimg/" + lable_time + "_" + file.getOriginalFilename();
 						}
 
-						System.out.println(filePath);
-						/******************** 测试 **************************/
+						System.out.println("文件保存路径: " + filePath);
+						
+						// 创建文件对象并确保父目录存在
 						File storeFile = new File(filePath);
-						// 得到输入流
-						// 得到输入流
+						storeFile.getParentFile().mkdirs(); // 确保目录存在
+						
+						// 获取输入输出流进行文件传输
 						InputStream in = file.getInputStream();
-						// 得到文件的输出流
 						OutputStream out = new FileOutputStream(storeFile);
-						// 确保父目录存在
-						storeFile.getParentFile().mkdirs();
-						// 文件总大小
-						long max = file.getSize();
+						
+						// 设置文件信息用于进度跟踪
+						long max = file.getSize(); // 文件总大小
 						video.setFileSize(max);
 						video.setFilename(file.getOriginalFilename());
+						
 						// 剩余大小
 						long other = max;
 						int len = 0;// 读取写入长度
 						// 读写缓冲
-						byte[] b = new byte[300];
+						byte[] b = new byte[1024]; // 增加缓冲区大小以提高性能
+						
 						// 循环从输入流写入到输出流,结束循环是len==-1
 						while ((len = in.read(b)) != -1) {
 							out.write(b, 0, len);
 							other -= len;
 							video.setFileSY(other);
-							// System.out.println("剩余大小:"+other);
-							// 给DTO设置other
-							// dto.setOther(other);
-							// System.out.println("总大小="+max+"剩余大小="+other);
-							// z总 max
-							// 剩余 other
-							// 传了 max-other
-							float zong = (float) (Integer.parseInt(String.valueOf(max)));
-							int shengxia = Integer.parseInt(String.valueOf(other));
-							float ii3 = (float) zong - shengxia;// 传了多少
+							
+							// 计算上传进度百分比
+							float zong = (float) max;
+							int shengxia = (int) other;
+							float ii3 = zong - shengxia;// 传了多少
 							if (shengxia != 0) {
 								int baifenbi = (int) ((ii3 / zong) * 100);
 								video.setBaifenbi(baifenbi);
-								// request.getSession().setAttribute("baifenbi",
-								// baifenbi);
-								// sSystem.out.println(baifenbi);
 							}
 						}
 						out.flush();// 刷新
@@ -1596,63 +1586,66 @@ public class T {
 						video.setTag(1);// 标记为1的时候表示上传成功
 						System.out.println("上传成功");
 
+						// 根据文件类型设置视频实体属性
+						if(file.getOriginalFilename().contains(".mp4")) {
+							// 设置视频文件路径
+							myvideo.setVideoAddress("/static/videolook/" + lable_time + "_" + file.getOriginalFilename());
+							
+							// 使用JAVE库获取视频时长
+							File source = new File(filePath);
+							String videolength = "0:00";
 
-                       if(file.getOriginalFilename().contains(".mp4")) {
-						   myvideo.setVideoAddress("/static/videolook/" + lable_time + "_" + file.getOriginalFilename());
-						   File source = new File(filePath);
-						   String videolength = "0:00";
+							try {
+								// 获取多媒体信息
+								MultimediaObject multimediaObject = new MultimediaObject(source);
+								MultimediaInfo m = multimediaObject.getInfo();
 
-						   try {
-							   // 创建自定义FFMPEGLocator使用系统PATH中的ffmpeg
-							   MultimediaObject multimediaObject = new MultimediaObject(source);
-							   MultimediaInfo m = multimediaObject.getInfo();
-
-							   long ls = m.getDuration();
-							   int minute = (int) (ls/60000);
-							   int second = (int) ((ls-minute*60000)/1000);
-							   videolength = minute+":"+String.format("%02d", second);
-							   System.out.println("视频时长: " + videolength);
-							   myvideo.setVideoTime(videolength);
-						   } catch (Exception e) {
-							   System.err.println("提取视频时长失败: " + e.getMessage());
-							   // 即使失败也继续处理，设置默认时长
-							   myvideo.setVideoTime("0:00");
-						   }
-//						   File source = new File(filePath);
-//						   String videolength = "";
-//						   try {
-//							   MultimediaObject multimediaObject = new MultimediaObject(source);
-//							   MultimediaInfo m = multimediaObject.getInfo();
-//							   long ls = m.getDuration();
-//							   //int hour = (int) (ls/3600);
-//							   int minute = (int) (ls/60000);
-//							   int second = (int) ((ls-minute*60000)/1000);
-//							   videolength = minute+":"+String.format("%02d", second);
-//							   System.out.println(videolength);
-//							   myvideo.setVideoTime(videolength);
-//						   } catch (Exception e) {
-//							   e.printStackTrace();
-//						   }
-
-					     }else {
-						   myvideo.setVideoImage("/static/videolook/videolookimg/" + lable_time + "_" + file.getOriginalFilename());
-
-					   }// 开始存储数据库 - - 这个好像好麻烦的说
-
-
-
-
+								long ls = m.getDuration();
+								int minute = (int) (ls/60000);
+								int second = (int) ((ls-minute*60000)/1000);
+								videolength = minute+":"+String.format("%02d", second);
+								System.out.println("视频时长: " + videolength);
+								myvideo.setVideoTime(videolength);
+							} catch (Exception e) {
+								System.err.println("提取视频时长失败: " + e.getMessage());
+								// 即使失败也继续处理，设置默认时长
+								myvideo.setVideoTime("0:00");
+							}
+						} else {
+							// 设置封面图片路径
+							myvideo.setVideoImage("/static/videolook/videolookimg/" + lable_time + "_" + file.getOriginalFilename());
+						}
+						
+						// 将文件从target目录复制到src目录，以保持开发环境同步
+						String srcBasePath = request.getServletContext().getRealPath("/").replace("target\\", "src\\main\\webapp\\");
+						if (srcBasePath.contains("target\\")) {
+						    srcBasePath = srcBasePath.substring(0, srcBasePath.indexOf("target\\"));
+						    srcBasePath += "src\\main\\webapp\\";
+						}
+						
+						String srcFilePath = srcBasePath + "static\\videolook\\" + lable_time + "_" + file.getOriginalFilename();
+						if (!file.getOriginalFilename().contains(".mp4")) {
+						    srcFilePath = srcBasePath + "static\\videolook\\videolookimg\\" + lable_time + "_" + file.getOriginalFilename();
+						}
+						
+						// 确保src目录存在
+						File srcFile = new File(srcFilePath);
+						srcFile.getParentFile().mkdirs();
+						
+						// 复制文件到src目录
+						try {
+						    java.nio.file.Files.copy(storeFile.toPath(), srcFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+						    System.out.println("文件已复制到src目录: " + srcFilePath);
+						} catch (Exception e) {
+						    System.err.println("复制文件到src目录失败: " + e.getMessage());
+						}
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-
-					/*************************
-					 * 我尼玛!这里
-					 *********************************/
-
 				}
 			}
-            myvideo.setVideodetail(miaoshu);
+			// 设置视频描述并保存到数据库
+			myvideo.setVideodetail(miaoshu);
 			videoserviceimpl.insertVideo(myvideo);
 		}
 		System.out.println("上传结束");

@@ -167,18 +167,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<li class="item"><a href="#" class="link">
 					<div class="num">
 						<i>${countdh}</i>
-					</div> 学习资源
+					</div> Java
 			</a></li>
-			<%--<li class="item"><a href="#" class="link">
+			<li class="item"><a href="#" class="link">
 					<div class="num">
 						<i>${countmad}</i>
-					</div> 影视
+					</div> C++
 			</a></li>
 			<li class="item"><a href="#" class="link">
 					<div class="num">
 						<i>${countdm}</i>
-					</div> 音乐
-			</a></li>--%>
+					</div> Python
+			</a></li>
 			<%--<li class="item item-square"><a href="testshabi.sf" class="link">广场</a>--%>
 				<%--<div class="nav-square__hover">--%>
 					<%--<ul>--%>
@@ -255,7 +255,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<div class="pic-list fl" js-tab="true">
 					<div class="pic-list__title">
 						<i class="icon icon-dance"></i>
-						<h2>学习资源</h2>
+						<h2>Java</h2>
 						<div class="tab-title">
 							<a href="#" class="cur">有新动态</a>
 
@@ -328,7 +328,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div id="sideBar">
 		<div class="sideBar-list">
 
-			<br> <a href="#">学习资源</a> <a href="#">教程</a> <a href="#">课程</a> <br>
+			<br> <a href="#">Java</a> <a href="#">C++</a> <a href="#">Python</a> <br>
 			<a href="#"><i></i>排序</a>
 		</div>
 		<br>

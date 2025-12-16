@@ -1,0 +1,3 @@
+DELETE FROM video;
+
+ALTER TABLE video AUTO_INCREMENT = 1;

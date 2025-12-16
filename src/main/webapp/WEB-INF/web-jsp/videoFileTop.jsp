@@ -182,9 +182,9 @@
                     <div >
                         <div><label for="image_file" style="color: #212121;font-size: 16px;font-weight: 700;">请选择投放区域</label></div>
                         <div style="margin-top: 5px;">
-                            <label><input name="Fruit" type="radio" value="1"  checked />动漫 </label>
-                            <label><input name="Fruit" type="radio" value="2" />影视 </label>
-                            <label><input name="Fruit" type="radio" value="3" />音乐 </label>
+                            <label><input name="Fruit" type="radio" value="1"  checked />Java </label>
+                            <label><input name="Fruit" type="radio" value="2" />C++ </label>
+                            <label><input name="Fruit" type="radio" value="3" />Python </label>
 
                         </div>
                     </div>
@@ -230,7 +230,7 @@
                             }
                         }
                         //开始判断输入的内容
-                        var biaoti = $("#ibiaoti").val();
+                        var biaoti = $("#biaoti").val();
                         var miaoshu = $("#miaoshu").val();
                         if(biaoti == "" || miaoshu == "" || miaoshu == "null" || biaoti == "null") {
                             alert("请正确输入标题和描述");
