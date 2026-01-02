@@ -37,6 +37,9 @@ var $=function(id) {
    return document.getElementById(id);
 }
 
+// 确保jQuery加载完成后再执行noConflict
+var j = jQuery.noConflict();
+
 function show_menu(num){
 for(i=0;i<100;i++){
 	if($('li0'+i)){
@@ -114,6 +117,17 @@ function show_menuC(){
 
 		</div>
 	</div>
+	
+	<div class="left02">
+		<div class="left02down">
+			<div class="left02down01"><a  onclick="show_menuB(22)" href="javascript:;"><div id="Bf022" class="left02down01_img"></div>音频管理</a></div>
+			<div class="left02down01_xia noneBox" id="Bli022">
+				<ul>
+					<li onmousemove="show_menu(22)" id="f022"><a >&middot;批量提取音频</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
 
 	<div class="left02">
 	  <div class="left02down">
@@ -149,7 +163,7 @@ function show_menuC(){
 
 
 		</div>
-	</div>
+	</div
 
 
 
@@ -211,8 +225,59 @@ function show_menuC(){
 	<div class="left01">
 		<div class="left03_right"></div>
 		<div class="left01_left"></div>
-		<div class="left03_c">安全退出</div>
+		<div class="left03_c"><a href="<%=request.getContextPath()%>/index.sf" style="color: white; text-decoration: none;">安全退出</a></div>
 	</div>
+	
+	<script type="text/javascript">
+		// 批量提取音频功能
+		jQuery(document).ready(function() {
+			jQuery("#batchExtractBtn").click(function() {
+				// 确认操作
+				if (!confirm("确定要批量提取所有视频的音频吗？这可能需要一些时间。")) {
+					return;
+				}
+				
+				// 显示加载动画和进度条
+				jQuery("#loading").show();
+				jQuery("#extractResult").hide();
+				jQuery("#progressContainer").show();
+				// 重置进度条
+				jQuery("#progressBar").css('width', '0%').text('0%');
+				jQuery("#progressText").text('开始处理...');
+				
+				// 启动批量提取音频
+				jQuery.post('<%=request.getContextPath()%>/startBatchExtractAudio', {}, function(startResponse) {
+					if (startResponse.success) {
+						// 开始轮询进度
+						var progressInterval = setInterval(function() {
+							jQuery.get('<%=request.getContextPath()%>/getBatchExtractProgress', function(progressData) {
+								if (progressData) {
+									// 更新进度条
+									var percentage = progressData.percentage || 0;
+									jQuery("#progressBar").css('width', percentage + '%').text(percentage + '%');
+									jQuery("#progressText").text(progressData.status + ' - 处理: ' + progressData.processed + '/' + progressData.total + ', 成功: ' + progressData.success);
+									
+									// 如果处理完成
+									if (progressData.status === '完成' || progressData.processed >= progressData.total) {
+										clearInterval(progressInterval);
+										jQuery("#loading").hide();
+										jQuery("#resultText").text('批量提取音频完成！');
+										jQuery("#successCount").text('成功处理：' + progressData.success + ' 个视频');
+										jQuery("#totalCount").text('总共处理：' + progressData.total + ' 个视频');
+										jQuery("#extractResult").show();
+										alert("批量提取音频完成！成功处理 " + progressData.success + " 个视频，共 " + progressData.total + " 个视频需要处理");
+									}
+								}
+							});
+						}, 1000); // 每秒更新一次进度
+					} else {
+						jQuery("#loading").hide();
+						alert("启动批量提取失败：" + startResponse.message);
+					}
+				});
+			});
+		});
+	</script>
 </div>
 <div class="rrcc" id="RightBox">
 	<div class="center" id="Mobile" onclick="show_menuC()"></div>
@@ -259,6 +324,35 @@ function show_menuC(){
 	</div>
 
 
+	<div class="right noneBox" id="li051">
+		<div class="right01"><img src="<%=request.getContextPath()%>/static/Houtai/images/04.gif" /> 留言管理 &gt; <span>留言审核</span></div>
+	</div>
+	
+	<div class="right noneBox" id="li022">
+		<div class="right01"><img src="<%=request.getContextPath()%>/static/Houtai/images/04.gif" /> 音频管理 &gt; <span>批量提取音频</span></div>
+		<div style="padding: 20px;">
+			<h3>批量提取音频</h3>
+			<p>此功能将为所有尚未提取音频的视频文件提取音频，并保存为MP3格式。</p>
+			<button id="batchExtractBtn" style="background: #00a1d6; color: white; padding: 10px 20px; border: none; cursor: pointer;">
+				开始批量提取音频
+			</button>
+			<div id="extractResult" style="margin-top: 15px; display: none;">
+				<p>提取结果：<span id="resultText"></span></p>
+				<p>成功处理：<span id="successCount"></span> 个视频</p>
+				<p>总共处理：<span id="totalCount"></span> 个视频</p>
+			</div>
+			<div id="loading" style="display: none; margin-top: 15px;">
+				正在处理，请稍候... <img src="<%=request.getContextPath()%>/static/Houtai/images/01.gif" alt="加载中..." width="16" height="16" />
+				<div id="progressContainer" style="margin-top: 10px; display: none;">
+					<div style="width: 100%; background-color: #f0f0f0; border-radius: 5px; overflow: hidden;">
+						<div id="progressBar" style="width: 0%; height: 20px; background-color: #4CAF50; text-align: center; line-height: 20px; color: white;">0%</div>
+					</div>
+					<div id="progressText">处理中...</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
 	<div class="right noneBox" id="li051">
 		<div class="right01"><img src="<%=request.getContextPath()%>/static/Houtai/images/04.gif" /> 留言管理 &gt; <span>留言审核</span></div>
 		<table width="100%" height="100%" border="0" cellspacing="0" cellpadding="3">

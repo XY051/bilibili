@@ -8,9 +8,10 @@
        http://www.springframework.org/schema/context/spring-context.xsd  
        http://www.springframework.org/schema/mvc  
        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
-	<!-- 配置上下文扫描 -->
-
-	<context:component-scan base-package="com.sf.*"></context:component-scan>
+	<!-- 配置上下文扫描，只扫描业务组件（服务层、数据访问层和数据库访问层） -->
+	<context:component-scan base-package="com.sf.service"></context:component-scan>
+	<context:component-scan base-package="com.sf.dao"></context:component-scan>
+	<context:component-scan base-package="com.sf.db"></context:component-scan>
 
 	<!-- 配置C3P0 必须在主配置里面配置 不然会出错....2333 -->
 	<!-- 加载配置文件 -->
@@ -48,71 +49,6 @@
 
 	</bean>
 		
-	<mvc:interceptors>
-		<!-- 国际化操作拦截器 如果采用基于（请求/Session/Cookie）则必需配置 --> 
-        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />  
-        <!-- 如果不定义 mvc:mapping path 将拦截所有的URL请求 -->
-           	<mvc:interceptor>
-           				<!-- 扫描所有 -->
-           			 <mvc:mapping path="/**" />
-           			 <!-- 不扫描 -->
-				<mvc:exclude-mapping path="/searchResult.sf"/>
-
-				<mvc:exclude-mapping path="/dianzhan/"/>
-				<mvc:exclude-mapping path="/follow/"/>
-				<mvc:exclude-mapping path="/user_info/"/>
-				       <mvc:exclude-mapping path="/insertdanmu/v3/"/><!-- 插入弹幕 -->
-				<mvc:exclude-mapping path="/insertdanmu/"/><!-- 插入弹幕 -->
-				<mvc:exclude-mapping path="/index.sf"/><!-- 首页 -->
-           			 <mvc:exclude-mapping path="/one"/><!-- 首页 -->
-           			 <mvc:exclude-mapping path="/logoone.sf"/><!-- 首页 -->
-           			 <mvc:exclude-mapping path="/login.sf"/><!-- 登录 -->
-           			 <mvc:exclude-mapping path="/loginservice.sf"/><!-- 登录请求 -->
-           			 <mvc:exclude-mapping path="/zhuce.sf"/><!-- 注册 -->
-           			 
-           			 <mvc:exclude-mapping path="/loginservice.sf"/><!-- 登录 -->
-           			 <mvc:exclude-mapping path="/messageuser.sf"/><!-- 注册 -->
-           			 <mvc:exclude-mapping path="/register.sf"/><!-- 注册请求 -->
-           			  <mvc:exclude-mapping path="/testshabi.sf"/><!-- 详情 -->
-           			 <mvc:exclude-mapping path="/ajaxtijiao1.sf"/><!-- 分类ajax --> 
-           			 <mvc:exclude-mapping path="/Shopping.sf"/><!-- 商品 -->
-           			 <mvc:exclude-mapping path="/gridspay.sf"/><!-- 商品详情 -->
-           			<mvc:exclude-mapping path="/video.sf"/><!-- 视频播放 -->
-           			<mvc:exclude-mapping path="/messageuser.sf"/><!-- 视频播放 -->
-           			<mvc:exclude-mapping path="/ajaxTuiJian"/><!-- 首页ajax -->
-				<mvc:exclude-mapping path="/ajaxTuiJian2"/>
-				<mvc:exclude-mapping path="/ajaxTuiJian3"/>
-				<mvc:exclude-mapping path="/userfollow.sf"/>
-				<mvc:exclude-mapping path="/shuaxin"/>
-				<mvc:exclude-mapping path="/tj"/>
-           			  <!-- 静态文件 -->
-
-        <bean class="com.sf.lanjieqi.AuthInterceptor"></bean>
-           	</mvc:interceptor>
-        
-	
-	</mvc:interceptors>
-
-
-
-		
-
-		<!-- 文件上传 -->
-    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" >
-		 <!--   		 p:defaultEncoding="UTF-8"  
-       					 p:maxUploadSize="1073741824"  最大1Gb
-        				 p:uploadTempDir="fileUpload/temp"   -->
-        				 <property name="defaultEncoding" value="utf-8"></property> 
-        				 <property name="maxUploadSize" value="1073741824"></property>
-    </bean>
-		
-
-
-
-
-
-
-
 	<!-- 模板 -->
 
 	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
@@ -122,4 +58,3 @@
 
 
 </beans>
-       

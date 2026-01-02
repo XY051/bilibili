@@ -93,4 +93,35 @@ public class VideoDaoimpl implements VideoDao {
         List<videoEntity> videoList=jdbcTemplate.getJdbcTemplate().query(select_sql,new Object[]{ user_id },new VideoRowMapperEntity());
         return videoList;
     }
+    
+    @Override
+    public List<videoEntity> selectVideo_by_user_id_and_name(String user_id, String videoName) {
+        String select_sql="select * from video where user_id = ? and videoName = ? ORDER BY uploadtime DESC";
+        List<videoEntity> videoList=jdbcTemplate.getJdbcTemplate().query(select_sql,new Object[]{ user_id, videoName },new VideoRowMapperEntity());
+        return videoList;
+    }
+    
+    @Override
+    public List<videoEntity> selectAllVideosWithoutAudio() {
+        String select_sql = "SELECT v.* FROM video v LEFT JOIN audio a ON v.videoID = a.video_id WHERE a.video_id IS NULL AND v.videoAddress LIKE '%.mp4' ORDER BY v.uploadtime DESC";
+        List<videoEntity> videoList = jdbcTemplate.getJdbcTemplate().query(select_sql, new VideoRowMapperEntity());
+        return videoList;
+    }
+    
+    @Override
+    public videoEntity getVideoById(int videoId) {
+        String select_sql = "SELECT * FROM video WHERE videoID = ?";
+        List<videoEntity> videoList = jdbcTemplate.getJdbcTemplate().query(select_sql, new Object[]{videoId}, new VideoRowMapperEntity());
+        if (videoList != null && !videoList.isEmpty()) {
+            return videoList.get(0);
+        }
+        return null;
+    }
+    
+    @Override
+    public List<videoEntity> selectAllVideos() {
+        String select_sql = "SELECT * FROM video ORDER BY uploadtime DESC";
+        List<videoEntity> videoList = jdbcTemplate.getJdbcTemplate().query(select_sql, new VideoRowMapperEntity());
+        return videoList;
+    }
 }

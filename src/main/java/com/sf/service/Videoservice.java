@@ -14,6 +14,7 @@ public interface Videoservice {
     public List<videoEntity> searchVideoByName(String name);
     public  boolean UpdateVideo(videoEntity video);
     public List<videoEntity> selectVideo_by_user_id(String user_id);
+    public List<videoEntity> selectVideo_by_user_id_and_name(String user_id, String videoName);
     public boolean supportPlusOne(int video_id);
     public boolean supportSubOne(int video_id);
     public boolean videoIscheck(int video_id);
@@ -26,4 +27,5 @@ public interface Videoservice {
     public List<videoEntity> searchVidetoptj(int start, int end);
     public int videotypecount(int videotype);
     public boolean lookTimesPlusOne(int video_id);
+    public List<videoEntity> selectAllVideos();
 }

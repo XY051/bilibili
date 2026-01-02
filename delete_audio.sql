@@ -1,0 +1,3 @@
+DELETE FROM audio;
+
+ALTER TABLE audio AUTO_INCREMENT = 1;

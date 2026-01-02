@@ -3,5 +3,6 @@
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/.idea/queries/Query.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/bilibili.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/delete_danmu.sql" dialect="GenericSQL" />
   </component>
 </project>

@@ -45,6 +45,11 @@ public class Videoserviceimpl  implements Videoservice{
     }
 
     @Override
+    public List<videoEntity> selectVideo_by_user_id_and_name(String user_id, String videoName) {
+        return videoDaoimpl.selectVideo_by_user_id_and_name(user_id, videoName);
+    }
+
+    @Override
     public boolean supportPlusOne(int video_id) {
         List<videoEntity> videoEntityList=readVideoByVid(video_id);
         if(videoEntityList!=null&&videoEntityList.size()==1&&videoEntityList.get(0)!=null){
@@ -161,5 +166,9 @@ public class Videoserviceimpl  implements Videoservice{
         return true;
     }
 
+    @Override
+    public List<videoEntity> selectAllVideos() {
+        return videoDaoimpl.selectAllVideos();
+    }
 
 }

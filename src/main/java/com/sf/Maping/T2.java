@@ -12,13 +12,13 @@ import com.sf.service.impl.RegisterServiceImpl;
 
 @Controller
 public class T2 {
-	
+
 	@Autowired
 	RegisterServiceImpl registerService;
-	
+
 	@RequestMapping("registertest.sf")
 	public String web3(){
-		
+
 		System.out.println("测试是否进入此方法");
 		userEntity user = new userEntity();
 		user.setUserID("1238");
@@ -27,38 +27,16 @@ public class T2 {
 		user.setUserState("1");
 		user.setUserPhone("123123");
 		user.setPassWord("123");
-		
+
 		boolean bl=registerService.RegisterService(user);
 		if(bl){
 			System.out.println("注册成功");
 		}else{
 			System.out.println("注册失败");
 		}
-		
-		
-		return "login";
-		
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
-	
-	
-	
+
+		return "login";
+
+	}
 }

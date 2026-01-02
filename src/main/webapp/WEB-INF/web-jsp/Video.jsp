@@ -2028,7 +2028,7 @@
                         autor="普通用户";
                     })
                 }else {
-                    alert_back("弹幕加载失败 -v-!");
+                    alert_back("现在还没有弹幕，多发发弹幕~");
                 }
                 $(".danmuku_list").click(function () {
 

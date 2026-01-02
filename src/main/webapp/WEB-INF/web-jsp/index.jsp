@@ -129,6 +129,114 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<script type="text/javascript">
             $(document).ready(function(){
             	$("#div2").hide();
+            	
+            	// Java分区刷新功能
+            	$("#shuaxin").click(function(){
+            		$.ajax({
+            			url:"shuaxin",
+            			type:"POST",
+            			data:{"videotype":1},
+            			success:function(data){
+            				var obj=eval("("+data+")");
+            				var html="";
+            				$(obj).each(function(index,item){
+            					html+=`<li class="item"><a href="video.sf?dizhi=`+item.video.videoAddress+`&shipingID=`+item.video.videoID+`" class="img-link">
+            					<img src="<%=request.getContextPath()%>`+item.video.videoImage+`" alt="#">
+            					<span class="mask"></span>
+            					<span class="time">`+item.video.videoTime+`</span>
+            					</a>
+            					<div class="img-info">
+            					<a href="video.sf?dizhi=`+item.video.videoAddress+`&shipingID=`+item.video.videoID+`">`+item.video.videoName+`</a>
+            					<div class="btm">
+            					<div class="user">
+            					<i></i>`+item.userMingzi+`
+            					</div>
+            					<div class="online">
+            					<i></i>`+item.video.videolookTime+`</div>
+            					</div>
+            					</div></li>`;
+            				});
+            				$(".list1").html(html);
+            			}
+            		});
+            	});
+            	
+            	// C++分区刷新功能
+            	$("#shuaxin2").click(function(){
+            		$.ajax({
+            			url:"shuaxin",
+            			type:"POST",
+            			data:{"videotype":2},
+            			success:function(data){
+            				var obj=eval("("+data+")");
+            				var html="";
+            				$(obj).each(function(index,item){
+            					html+=`<li class="item"><a href="video.sf?dizhi=`+item.video.videoAddress+`&shipingID=`+item.video.videoID+`" class="img-link">
+            					<img src="<%=request.getContextPath()%>`+item.video.videoImage+`" alt="#">
+            					<span class="mask"></span>
+            					<span class="time">`+item.video.videoTime+`</span>
+            					</a>
+            					<div class="img-info">
+            					<a href="video.sf?dizhi=`+item.video.videoAddress+`&shipingID=`+item.video.videoID+`">`+item.video.videoName+`</a>
+            					<div class="btm">
+            					<div class="user">
+            					<i></i>`+item.userMingzi+`
+            					</div>
+            					<div class="online">
+            					<i></i>`+item.video.videolookTime+`</div>
+            					</div>
+            					</div></li>`;
+            				});
+            				$(".list1").html(html);
+            			}
+            		});
+            	});
+            	
+            	// Python分区刷新功能
+            	$("#shuaxin3").click(function(){
+            		$.ajax({
+            			url:"shuaxin",
+            			type:"POST",
+            			data:{"videotype":3},
+            			success:function(data){
+            				var obj=eval("("+data+")");
+            				var html="";
+            				$(obj).each(function(index,item){
+            					html+=`<li class="item"><a href="video.sf?dizhi=`+item.video.videoAddress+`&shipingID=`+item.video.videoID+`" class="img-link">
+            					<img src="<%=request.getContextPath()%>`+item.video.videoImage+`" alt="#">
+            					<span class="mask"></span>
+            					<span class="time">`+item.video.videoTime+`</span>
+            					</a>
+            					<div class="img-info">
+            					<a href="video.sf?dizhi=`+item.video.videoAddress+`&shipingID=`+item.video.videoID+`">`+item.video.videoName+`</a>
+            					<div class="btm">
+            					<div class="user">
+            					<i></i>`+item.userMingzi+`
+            					</div>
+            					<div class="online">
+            					<i></i>`+item.video.videolookTime+`</div>
+            					</div>
+            					</div></li>`;
+            				});
+            				$(".list1").html(html);
+            			}
+            		});
+            	});
+            	
+            	// Java查看更多功能
+            	$("#chakan").click(function(){
+            		location.href="videoFileTop";
+            	});
+            	
+            	// C++查看更多功能
+            	$("#chakan2").click(function(){
+            		location.href="videoFileTop";
+            	});
+            	
+            	// Python查看更多功能
+            	$("#chakan3").click(function(){
+            		location.href="videoFileTop";
+            	});
             });
            		 
             function asjdh() {//移出
@@ -164,17 +272,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<ul class="nav-list">
 			<li class="item item-home"><a href="index.sf" class="link">首页</a>
 			</li>
-			<li class="item"><a href="#" class="link">
+			<li class="item"><a href="#dance" class="link">
 					<div class="num">
 						<i>${countdh}</i>
 					</div> Java
 			</a></li>
-			<li class="item"><a href="#" class="link">
+			<li class="item"><a href="#mad" class="link">
 					<div class="num">
 						<i>${countmad}</i>
 					</div> C++
 			</a></li>
-			<li class="item"><a href="#" class="link">
+			<li class="item"><a href="#dm" class="link">
 					<div class="num">
 						<i>${countdm}</i>
 					</div> Python
@@ -311,6 +419,148 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</ul>
 						</div>
 						<button type="button" class="more" id="chakan">
+							查看更多<i></i>
+						</button>
+
+						<script type="text/javascript">
+									
+						</script>
+					</div>
+				</div>
+			</div>
+			
+			<!-- C++ 分区 -->
+			<div class="mainCont clearfix" id="mad" js-move="true">
+				<div class="pic-list fl" js-tab="true">
+					<div class="pic-list__title">
+						<i class="icon icon-mad"></i>
+						<h2>C++</h2>
+						<div class="tab-title">
+							<a href="#" class="cur">有新动态</a>
+
+						</div>
+
+						<div class="more-wrap">
+							<a  class="dynamic" id="shuaxin2"><i></i>刷新</a>
+
+						</div>
+					</div>
+					<ul class="list1 pic-list__wrapper clearfix tab-cont__item tab-cont__cur">
+						<!-- 这里开始遍历 -->
+						<c:forEach items="${list2}" var="list2">
+							<li class="item"><a
+								href="video.sf?dizhi=${list2.videoAddress}&shipingID=${list2.videoID}"
+								class="img-link"> <img
+									src="<%=request.getContextPath()%>${list2.videoImage}" alt="#">
+									<span class="mask"></span> <span class="time">${list2.videoTime}</span>
+							</a>
+								<div class="img-info">
+									<a
+										href="video.sf?dizhi=${list2.videoAddress}&shipingID=${list2.videoID}">${list2.videoName }</a>
+									<div class="btm">
+										<div class="user">
+											<i></i>${list2.userMingzi}
+										</div>
+										<div class="online">
+											<i></i>${list2.videolookTime}</div>
+									</div>
+								</div></li>
+						</c:forEach>
+					</ul>
+				</div>
+				<div class="main-side fr" js-tab="true">
+					<div class="main-side__title">
+						<div class="rank-t">
+							<h3>最新</h3>
+						</div>
+						<div class="tab-title">
+							<a href="#" class="cur">最新动态</a>
+						</div>
+						<!-- <div class="side-select">
+              <span>三日</span>
+              <i></i>
+            </div> -->
+					</div>
+					<div class="main-side__cont">
+						<div class="tab-cont">
+
+							<ul class="tab-cont__item main-rank" id="did22">
+
+								<!-- ajax -->
+							</ul>
+						</div>
+						<button type="button" class="more" id="chakan2">
+							查看更多<i></i>
+						</button>
+
+						<script type="text/javascript">
+									
+						</script>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Python 分区 -->
+			<div class="mainCont clearfix" id="dm" js-move="true">
+				<div class="pic-list fl" js-tab="true">
+					<div class="pic-list__title">
+						<i class="icon icon-dm"></i>
+						<h2>Python</h2>
+						<div class="tab-title">
+							<a href="#" class="cur">有新动态</a>
+
+						</div>
+
+						<div class="more-wrap">
+							<a  class="dynamic" id="shuaxin3"><i></i>刷新</a>
+
+						</div>
+					</div>
+					<ul class="list1 pic-list__wrapper clearfix tab-cont__item tab-cont__cur">
+						<!-- 这里开始遍历 -->
+						<c:forEach items="${list3}" var="list3">
+							<li class="item"><a
+								href="video.sf?dizhi=${list3.videoAddress}&shipingID=${list3.videoID}"
+								class="img-link"> <img
+									src="<%=request.getContextPath()%>${list3.videoImage}" alt="#">
+									<span class="mask"></span> <span class="time">${list3.videoTime}</span>
+							</a>
+								<div class="img-info">
+									<a
+										href="video.sf?dizhi=${list3.videoAddress}&shipingID=${list3.videoID}">${list3.videoName }</a>
+									<div class="btm">
+										<div class="user">
+											<i></i>${list3.userMingzi}
+										</div>
+										<div class="online">
+											<i></i>${list3.videolookTime}</div>
+									</div>
+								</div></li>
+						</c:forEach>
+					</ul>
+				</div>
+				<div class="main-side fr" js-tab="true">
+					<div class="main-side__title">
+						<div class="rank-t">
+							<h3>最新</h3>
+						</div>
+						<div class="tab-title">
+							<a href="#" class="cur">最新动态</a>
+						</div>
+						<!-- <div class="side-select">
+              <span>三日</span>
+              <i></i>
+            </div> -->
+					</div>
+					<div class="main-side__cont">
+						<div class="tab-cont">
+
+							<ul class="tab-cont__item main-rank" id="did23">
+
+								<!-- ajax -->
+							</ul>
+						</div>
+						<button type="button" class="more" id="chakan3">
 							查看更多<i></i>
 						</button>
 
