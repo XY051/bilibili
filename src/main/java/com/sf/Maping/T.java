@@ -2011,10 +2011,45 @@ public class T {
                     System.out.println("检查视频ID: " + video.getVideoID() + ", 路径: " + videoPath);
                     if(videoPath != null && videoPath.contains(".mp4")) {
                         totalCount++;
+                        // 构建完整路径 - 优先使用src目录以符合用户偏好
+                        String projectPath = System.getProperty("user.dir");
+                        String fullVideoPath = projectPath + File.separator + "src" + File.separator + "main" + File.separator + 
+                                   "webapp" + videoPath;
+                        
+                        // 检查src目录中是否存在视频文件
+                        File videoFile = new File(fullVideoPath);
+                        if (!videoFile.exists()) {
+                            // 如果src目录中不存在，尝试使用ServletContext路径
+                            String realPath = request.getServletContext().getRealPath(videoPath);
+                            if (realPath != null && new File(realPath).exists()) {
+                                fullVideoPath = realPath;
+                                System.out.println("简单批量处理 - 使用ServletContext路径: " + fullVideoPath);
+                            } else {
+                                // 如果ServletContext路径也不存在，尝试Tomcat部署路径
+                                String catalinaBase = System.getProperty("catalina.base");
+                                if (catalinaBase != null && catalinaBase.contains("tomcat")) {
+                                    String correctedCatalinaBase = catalinaBase;
+                                    if (catalinaBase.endsWith("bin")) {
+                                        correctedCatalinaBase = catalinaBase.substring(0, catalinaBase.lastIndexOf("bin"));
+                                    }
+                                    fullVideoPath = correctedCatalinaBase + "webapps" + File.separator + "bilibili" + videoPath;
+                                    System.out.println("简单批量处理 - 使用Tomcat路径: " + fullVideoPath);
+                                }
+                            }
+                        } else {
+                            System.out.println("简单批量处理 - 使用src路径: " + fullVideoPath);
+                        }
+                        
+                        // 检查文件是否存在
+                        if (!new File(fullVideoPath).exists()) {
+                            System.out.println("视频文件不存在: " + fullVideoPath);
+                            continue; // 跳过这个视频
+                        }
+                        
                         // 提取音频
                         boolean success = false;
                         if (audioservice != null) {
-                            success = audioservice.extractAudio((int)video.getVideoID(), videoPath);
+                            success = audioservice.extractAudio((int)video.getVideoID(), fullVideoPath);
                         } else {
                             System.out.println("音频服务未初始化，跳过视频ID: " + video.getVideoID());
                         }
@@ -2102,7 +2137,8 @@ public class T {
                                 
                                 // 构建完整路径 - 优先使用src目录以符合用户偏好
                                 String projectPath = System.getProperty("user.dir");
-                                String fullVideoPath = projectPath + "/src/main/webapp" + videoPath;
+                                String fullVideoPath = projectPath + File.separator + "src" + File.separator + "main" + File.separator + 
+                                           "webapp" + videoPath;
                                 
                                 // 检查src目录中是否存在视频文件
                                 File videoFile = new File(fullVideoPath);
