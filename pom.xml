@@ -83,7 +83,19 @@
 			<version>8.0.33</version>
 		</dependency>
 
+		<!-- 添加HTTP客户端依赖 -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.13</version>
+		</dependency>
 
+		<!-- 或者使用 HTTP 客户端调用 API -->
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>4.10.0</version>
+		</dependency>
 
 		<!--json依赖-->
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->

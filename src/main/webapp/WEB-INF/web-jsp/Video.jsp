@@ -1180,6 +1180,133 @@
                     <span title="总播放数--" class="view">--播放 · </span>
                     <span title="历史累计弹幕数--" class="dm">--弹幕</span>
                 </div>
+                <!-- 在AI分析区域添加输入框 -->
+                <div id="ai-analysis-section" style="margin-top: 20px; padding: 15px; border: 1px solid #e5e9ef; border-radius: 4px;">
+                    <h4>AI视频分析</h4>
+
+                    <!-- AI消息输入框 -->
+                    <div style="margin-top: 10px;">
+        <textarea id="ai-message-input"
+                  placeholder="请输入您想询问AI的问题或音频地址（绝对地址，没有双引号）"
+                  style="width: 100%; height: 80px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; resize: vertical;">
+        </textarea>
+                        <button onclick="sendToAI()" class="btn btn-primary" style="margin-top: 10px; margin-right: 10px;">
+                            发送给Deepseek
+                        </button>
+                        <button onclick="voiceToText()" class="btn btn-secondary" style="margin-top: 10px;">
+                            音频转文字
+                        </button>
+                    </div>
+
+                    <!-- AI响应显示区域 -->
+                    <div id="ai-response" style="margin-top: 15px; padding: 10px; background-color: #f9f9f9; border-radius: 4px; display: none;">
+                        <h5>AI回复:</h5>
+                        <div id="ai-response-content"></div>
+                    </div>
+
+                    <!-- AI分析结果 -->
+                    <div id="ai-analysis-result" style="margin-top: 10px;"></div>
+                </div>
+
+                <script>
+                    function voiceToText() {
+                        var message = $('#ai-message-input').val();
+                        if (!message.trim()) {
+                            alert('请输入您想询问的内容');
+                            return;
+                        }
+                        console.log('发送给AI的消息:', message);
+
+                        $.ajax({
+                            url: '<%=request.getContextPath()%>/voiceToText',
+                            type: 'POST',
+                            data: {
+                                message: message
+                            },
+                            success: function(response) {
+                                // 首先检查response是否存在且为对象
+                                if(response) {
+                                    console.log('AI的回复:', response);
+                                    var jsonObject = JSON.parse(response);
+                                    if(jsonObject) {
+                                        console.log("success");
+                                        $('#ai-response-content').html('<p><strong>AI:</strong> ' + jsonObject.response + '</p>');
+                                        $('#ai-response').show();
+                                        $('#ai-message-input').val(''); // 清空输入框
+                                    } else {
+                                        console.log("fail");
+                                        $('#ai-response-content').html('<p style="color: red;">错误: ' + (jsonObject.error || '未知错误') + '</p>');
+                                        $('#ai-response').show();
+                                    }
+                                } else {
+                                    console.log('AI的回复:', response);
+                                    $('#ai-response-content').html('<p style="color: red;">错误: 服务器返回数据格式不正确</p>');
+                                    $('#ai-response').show();
+                                }
+                            },
+                            error: function() {
+                                $('#ai-response-content').html('<p style="color: red;">请求失败，请稍后重试</p>');
+                                $('#ai-response').show();
+                            }
+                        });
+                    }
+
+                    // 发送消息给AI
+                    function sendToAI() {
+                        var message = $('#ai-message-input').val();
+                        if (!message.trim()) {
+                            alert('请输入您想询问的内容');
+                            return;
+                        }
+                        console.log('发送给AI的消息:', message);
+
+                        $.ajax({
+                            url: '<%=request.getContextPath()%>/chat',
+                            type: 'POST',
+                            data: {
+                                message: message
+                            },
+                            success: function(response) {
+                                // 首先检查response是否存在且为对象
+                                if(response) {
+                                    console.log('AI的回复:', response);
+                                    var jsonObject = JSON.parse(response);
+                                    if(jsonObject) {
+                                        console.log("success");
+                                        $('#ai-response-content').html('<p><strong>AI:</strong> ' + jsonObject.response + '</p>');
+                                        $('#ai-response').show();
+                                        $('#ai-message-input').val(''); // 清空输入框
+                                    } else {
+                                        console.log("fail");
+                                        $('#ai-response-content').html('<p style="color: red;">错误: ' + (jsonObject.error || '未知错误') + '</p>');
+                                        $('#ai-response').show();
+                                    }
+                                } else {
+                                    console.log('AI的回复:', response);
+                                    $('#ai-response-content').html('<p style="color: red;">错误: 服务器返回数据格式不正确</p>');
+                                    $('#ai-response').show();
+                                }
+                            },
+                            error: function() {
+                                $('#ai-response-content').html('<p style="color: red;">请求失败，请稍后重试</p>');
+                                $('#ai-response').show();
+                            }
+                        });
+                    }
+
+
+                    // 添加回车发送功能
+                    $(document).ready(function() {
+                        $('#ai-message-input').keypress(function(e) {
+                            if (e.which === 13 && !e.shiftKey) { // Enter键发送，Shift+Enter换行
+                                e.preventDefault();
+                                sendToAI();
+                            }
+                        });
+                    });
+                </script>
+
+
             </div>
 
 
