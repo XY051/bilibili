@@ -3,6 +3,8 @@ package com.sf.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sf.config.ApiConfig;
+import com.sf.dao.JsonDao;
+import com.sf.entity.jsonEntity;
 import com.sf.service.AiService;
 import okhttp3.*;
 import org.apache.http.HttpEntity;
@@ -12,9 +14,17 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ws.schild.jave.Encoder;
+import ws.schild.jave.EncoderException;
+import ws.schild.jave.MultimediaObject;
+import ws.schild.jave.encode.AudioAttributes;
+import ws.schild.jave.encode.EncodingAttributes;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +32,12 @@ import java.util.Map;
 @Service
 public class AiServiceimpl implements AiService {
     private final ObjectMapper objectMapper = new ObjectMapper();
+    
+    @Autowired
+    private com.sf.service.Audioservice audioService;
+    
+    @Autowired
+    private com.sf.dao.JsonDao jsonDao;
 
     @Override
     public String voiceToText(String audioFilePath) throws Exception
@@ -71,10 +87,340 @@ public class AiServiceimpl implements AiService {
             return "解析转录结果失败";
         }
     }
+    
+    public String processVideoToText(String videoPath) throws Exception {
+        try {
+            // 1. 从视频路径获取视频文件名（不含扩展名）
+            String videoFileName = new File(videoPath).getName();
+            String videoNameWithoutExt = videoFileName.substring(0, videoFileName.lastIndexOf('.'));
+            
+            // 2. 检查JSON文件是否存在
+            String jsonDir = "src/main/webapp/static/json";
+            String jsonPath = jsonDir + "/" + videoNameWithoutExt + ".json";
+            File jsonFile = new File(jsonPath);
+            
+            // 3. 如果JSON文件存在，直接返回提示信息
+            if (jsonFile.exists()) {
+                return "该视频已转换过文字，JSON文件已存在";
+            }
+            
+            // 4. 如果JSON文件不存在，先提取音频
+            String audioDir = "src/main/webapp/static/audio";
+            String audioPath = audioDir + "/" + videoNameWithoutExt + ".mp3";
+            
+            // 确保音频目录存在
+            File audioDirectory = new File(audioDir);
+            if (!audioDirectory.exists()) {
+                audioDirectory.mkdirs();
+            }
+            
+            // 检查音频文件是否存在，如果不存在则提取音频
+            File audioFile = new File(audioPath);
+            if (!audioFile.exists()) {
+                // 提取音频的逻辑
+                if (!extractAudioFromVideo(videoPath, audioPath)) {
+                    throw new RuntimeException("提取音频失败");
+                }
+            }
+            
+            // 5. 将音频转为文字
+            String transcription = voiceToText(audioPath);
+            
+            // 6. 将转录结果保存为JSON文件
+            saveTranscriptionToJson(transcription, jsonPath);
+            
+            // 7. 返回成功信息
+            return "音频转文字成功，JSON文件已保存到: " + jsonPath;
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("处理视频转文字失败: " + e.getMessage());
+        }
+    }
+    
+    private boolean extractAudioFromVideo(String videoPath, String audioPath) {
+        try {
+            // 检查FFmpeg是否可用
+            try {
+                Encoder encoder = new Encoder();
+                System.out.println("FFmpeg可用，开始转换...");
+            } catch (Exception e) {
+                System.out.println("FFmpeg不可用，请检查JAVE库配置: " + e.getMessage());
+                e.printStackTrace();
+                return false;
+            }
+
+            File source = new File(videoPath);
+            File target = new File(audioPath);
+
+            // 确保目标目录存在
+            File targetDir = target.getParentFile();
+            if (targetDir != null && !targetDir.exists()) {
+                boolean created = targetDir.mkdirs();
+                if (!created) {
+                    System.out.println("无法创建音频目录: " + targetDir.getAbsolutePath());
+                    return false;
+                }
+                System.out.println("已创建音频目录: " + targetDir.getAbsolutePath());
+            }
+            
+            System.out.println("视频源路径: " + source.getAbsolutePath());
+            System.out.println("音频目标路径: " + target.getAbsolutePath());
+            
+            System.out.println("源文件大小: " + source.length() + " 字节");
+
+            AudioAttributes audio = new AudioAttributes();
+            audio.setCodec("libmp3lame"); // 使用MP3编码
+
+            EncodingAttributes attrs = new EncodingAttributes();
+            attrs.setOutputFormat("mp3");
+            attrs.setAudioAttributes(audio);
+
+            Encoder encoder = new Encoder();
+            encoder.encode(new MultimediaObject(source), target, attrs);
+            
+            System.out.println("音频转换完成");
+
+            // 检查音频文件是否成功生成
+            if (!target.exists() || target.length() == 0) {
+                System.out.println("音频文件未成功生成或文件大小为0: " + target.getAbsolutePath());
+                return false;
+            }
+            
+            System.out.println("音频提取成功: " + target.getAbsolutePath());
+            return true;
+        } catch (EncoderException e) {
+            System.out.println("音频转换失败: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            System.out.println("音频提取过程中发生未知错误: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    private void saveTranscriptionToJson(String transcription, String jsonPath) throws IOException {
+        // 创建JSON目录（如果不存在）
+        File jsonFile = new File(jsonPath);
+        File jsonDir = jsonFile.getParentFile();
+        if (jsonDir != null && !jsonDir.exists()) {
+            boolean created = jsonDir.mkdirs();
+            if (created) {
+                System.out.println("创建JSON目录成功: " + jsonDir.getAbsolutePath());
+            } else {
+                System.out.println("创建JSON目录失败: " + jsonDir.getAbsolutePath());
+            }
+        }
+        
+        // 写入JSON文件
+        try (FileWriter writer = new FileWriter(jsonFile)) {
+            writer.write(transcription);
+            System.out.println("JSON文件写入成功: " + jsonFile.getAbsolutePath());
+        }
+    }
     @Override
     public String analyzeVideo(String videoContent) throws Exception {
         return chatWithDeepSeek("请分析这段视频内容并给出总结: " + videoContent);
     }
+    // 用于检查视频对应的JSON文件是否存在，并进行音频转文字处理
+    @Override
+    public String processVideoToTextWithJsonCheck(int videoId, String videoPath) throws Exception {
+        try {
+            // 1. 从视频路径获取视频文件名（不含扩展名）
+            String videoFileName = new File(videoPath).getName();
+            String videoNameWithoutExt = videoFileName.substring(0, videoFileName.lastIndexOf('.'));
+            
+            // 2. 检查JSON文件是否存在
+            String jsonDir = "src/main/webapp/static/json";
+            String jsonPath = jsonDir + "/" + videoNameWithoutExt + ".json";
+            // 使用完整路径来检查文件是否存在
+            String checkJsonPath = getWebAppPath() + File.separator + "static" + File.separator + "json" + File.separator + videoNameWithoutExt + ".json";
+            File jsonFile = new File(checkJsonPath);
+            
+            // 3. 检查数据库中是否已存在对应音频ID的JSON记录
+            jsonEntity existingJson = jsonDao.getJsonByJsonPath("/static/json/" + videoNameWithoutExt + ".json");
+            
+            // 4. 如果JSON文件存在且数据库中有记录，直接返回提示信息
+            if (jsonFile.exists() && existingJson != null) {
+                return "该视频已转换过文字，JSON文件已存在";
+            }
+            
+            // 5. 如果JSON文件不存在，先提取音频
+            String audioDir = "src/main/webapp/static/audio";
+            String audioPath = audioDir + "/" + videoNameWithoutExt + ".mp3";
+            
+            // 确保音频目录存在
+            File audioDirectory = new File(audioDir);
+            if (!audioDirectory.exists()) {
+                audioDirectory.mkdirs();
+            }
+            
+            // 检查音频文件是否存在，如果不存在则提取音频
+            File audioFile = new File(audioPath);
+            if (!audioFile.exists()) {
+                // 处理视频路径 - 将相对路径转换为绝对路径
+                String absoluteVideoPath;
+                if (videoPath.startsWith("/")) {
+                    // 构建绝对路径 - 动态获取项目路径
+                    String webappPath = getWebAppPath();
+                    // 确保路径以分隔符结尾
+                    if (!webappPath.endsWith(File.separator)) {
+                        webappPath += File.separator;
+                    }
+                    absoluteVideoPath = webappPath + videoPath.substring(1).replace("/", File.separator);
+                } else {
+                    absoluteVideoPath = videoPath;
+                }
+                
+                // 检查视频文件是否存在
+                File videoFile = new File(absoluteVideoPath);
+                if (!videoFile.exists()) {
+                    // 如果在webapp路径下没找到，尝试项目根路径
+                    String projectPath = getProjectPath();
+                    if (!projectPath.endsWith(File.separator)) {
+                        projectPath += File.separator;
+                    }
+                    String altPath = projectPath + videoPath.substring(1).replace("/", File.separator);
+                    videoFile = new File(altPath);
+                    if (videoFile.exists()) {
+                        absoluteVideoPath = altPath;
+                    }
+                }
+                
+                if (!videoFile.exists()) {
+                    // 最后尝试直接拼接src/main/webapp路径
+                    String directPath = "src" + File.separator + "main" + File.separator + "webapp" + videoPath.replace("/", File.separator);
+                    videoFile = new File(directPath);
+                    if (videoFile.exists()) {
+                        absoluteVideoPath = directPath;
+                    }
+                }
+                
+                if (!videoFile.exists()) {
+                    throw new RuntimeException("视频文件不存在: " + absoluteVideoPath);
+                }
+                
+                // 提取音频的逻辑
+                if (!extractAudioFromVideo(absoluteVideoPath, audioPath)) {
+                    throw new RuntimeException("提取音频失败");
+                }
+            }
+            
+            // 6. 将音频转为文字
+            String transcription = voiceToText(audioPath);
+            
+            // 7. 将转录结果保存为JSON文件
+            String fullJsonPath = getWebAppPath() + File.separator + "static" + File.separator + "json" + File.separator + videoNameWithoutExt + ".json";
+            saveTranscriptionToJson(transcription, fullJsonPath);
+            
+            // 8. 创建或获取音频记录
+            // 首先检查数据库中是否存在对应的音频记录
+            com.sf.entity.audioEntity audioInfo = null;
+            
+            // 尝试获取已存在的音频记录
+            audioInfo = audioService.getAudioByVideoId(videoId);
+            
+            if (audioInfo == null) {
+                // 如果没有找到音频记录，则创建一个新的
+                audioInfo = new com.sf.entity.audioEntity();
+                audioInfo.setVideo_id(videoId);
+                audioInfo.setAudio_name(videoNameWithoutExt + ".mp3");
+                audioInfo.setAudio_path("/static/audio/" + videoNameWithoutExt + ".mp3");
+                audioInfo.setAudio_size(audioFile.length());
+                audioInfo.setCreate_time(new java.util.Date());
+                
+                // 保存音频信息到数据库
+                audioService.saveAudioInfo(audioInfo);
+            }
+            
+            // 确保音频信息已保存，获取最新的音频ID
+            if (audioInfo.getAudio_id() == 0) {
+                // 如果audioInfo是新创建的，可能还没有ID，需要重新查询
+                audioInfo = audioService.getAudioByVideoId(videoId);
+            }
+            
+            // 9. 创建JSON记录并保存到数据库
+            // 重新创建jsonFile对象以获取正确的文件大小
+            File actualJsonFile = new File(fullJsonPath);
+            jsonEntity jsonEntity = new jsonEntity();
+            jsonEntity.setAudioId(audioInfo != null ? audioInfo.getAudio_id() : 0);
+            jsonEntity.setJsonName(videoNameWithoutExt + ".json");
+            jsonEntity.setJsonPath("/static/json/" + videoNameWithoutExt + ".json");
+            jsonEntity.setJsonSize(actualJsonFile.length());
+            
+            boolean saved = jsonDao.saveJsonInfo(jsonEntity);
+            
+            // 10. 返回成功信息
+            if (saved) {
+                return "音频转文字成功，JSON文件已保存到: " + fullJsonPath + "，数据库记录已创建";
+            } else {
+                return "音频转文字成功，但数据库记录保存失败";
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("处理视频转文字失败: " + e.getMessage());
+        }
+    }
+    
+    // 仅检查视频对应的JSON文件是否存在，不执行转换
+    @Override
+    public String checkVideoToTextStatus(int videoId, String videoPath) throws Exception {
+        try {
+            // 1. 从视频路径获取视频文件名（不含扩展名）
+            String videoFileName = new File(videoPath).getName();
+            String videoNameWithoutExt = videoFileName.substring(0, videoFileName.lastIndexOf('.'));
+            
+            // 2. 检查JSON文件是否存在
+            String jsonDir = "src/main/webapp/static/json";
+            String jsonPath = jsonDir + "/" + videoNameWithoutExt + ".json";
+            // 使用完整路径来检查文件是否存在
+            String checkStatusJsonPath = getWebAppPath() + File.separator + "static" + File.separator + "json" + File.separator + videoNameWithoutExt + ".json";
+            File jsonFile = new File(checkStatusJsonPath);
+            
+            // 3. 检查数据库中是否已存在对应音频ID的JSON记录
+            jsonEntity existingJson = jsonDao.getJsonByJsonPath("/static/json/" + videoNameWithoutExt + ".json");
+            
+            // 4. 如果JSON文件存在且数据库中有记录，返回已存在信息
+            if (jsonFile.exists() && existingJson != null) {
+                return "该视频已转换过文字，JSON文件已存在";
+            } else if (jsonFile.exists()) {
+                // 如果文件存在但数据库中没有记录
+                return "检测到JSON文件，但数据库记录不完整";
+            } else if (existingJson != null) {
+                // 如果数据库中有记录但文件不存在
+                return "数据库中存在记录，但JSON文件不存在";
+            } else {
+                // 如果两者都不存在
+                return "该视频尚未转换过文字，可以进行转换";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("检查视频转文字状态失败: " + e.getMessage());
+        }
+    }
+    
+    // 获取项目webapp路径
+    private String getWebAppPath() {
+        // 简化路径获取，直接返回项目路径
+        String projectPath = System.getProperty("user.dir");
+        if (projectPath == null || !projectPath.endsWith("bilibili")) {
+            // 如果在开发环境，尝试构建路径
+            projectPath = "C:/Course/Third/JavaMvc/bilibili/bilibili";
+        }
+        return projectPath + File.separator + "src" + File.separator + "main" + File.separator + "webapp";
+    }
+    
+    // 获取项目根路径
+    private String getProjectPath() {
+        String projectPath = System.getProperty("user.dir");
+        if (projectPath == null || !projectPath.endsWith("bilibili")) {
+            projectPath = "C:/Course/Third/JavaMvc/bilibili/bilibili";
+        }
+        return projectPath;
+    }
+    
     @Override
     public String chatWithDeepSeek(String userMessage) throws Exception {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {

@@ -1196,6 +1196,9 @@
                         <button onclick="voiceToText()" class="btn btn-secondary" style="margin-top: 10px;">
                             音频转文字
                         </button>
+                        <button onclick="videoToText()" class="btn btn-info" style="margin-top: 10px; margin-left: 10px;">
+                            视频转文字
+                        </button>
                     </div>
 
                     <!-- AI响应显示区域 -->
@@ -1206,6 +1209,11 @@
 
                     <!-- AI分析结果 -->
                     <div id="ai-analysis-result" style="margin-top: 10px;"></div>
+                    
+                    <!-- 视频转文字状态 -->
+                    <div id="video-to-text-status" style="margin-top: 10px; padding: 10px; background-color: #f0f8ff; border-radius: 4px; display: none;">
+                        <p id="status-message"></p>
+                    </div>
                 </div>
 
                 <script>
@@ -1227,19 +1235,69 @@
                                 // 首先检查response是否存在且为对象
                                 if(response) {
                                     console.log('AI的回复:', response);
+                                    try {
+                                        var jsonObject = JSON.parse(response);
+                                        if(jsonObject && jsonObject.success) {
+                                            console.log("success");
+                                            $('#ai-response-content').html('<p><strong>AI:</strong> ' + jsonObject.response + '</p>');
+                                            $('#ai-response').show();
+                                            $('#ai-message-input').val(''); // 清空输入框
+                                        } else {
+                                            console.log("fail");
+                                            var errorMsg = jsonObject && jsonObject.error ? jsonObject.error : '未知错误';
+                                            $('#ai-response-content').html('<p style="color: red;">错误: ' + errorMsg + '</p>');
+                                            $('#ai-response').show();
+                                        }
+                                    } catch(e) {
+                                        // 如果响应不是JSON格式，直接显示响应内容
+                                        console.log('响应不是JSON格式:', response);
+                                        $('#ai-response-content').html('<p><strong>AI:</strong> ' + response + '</p>');
+                                        $('#ai-response').show();
+                                        $('#ai-message-input').val(''); // 清空输入框
+                                    }
+                                } else {
+                                    console.log('AI的回复:', response);
+                                    $('#ai-response-content').html('<p style="color: red;">错误: 服务器返回数据格式不正确</p>');
+                                    $('#ai-response').show();
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                $('#ai-response-content').html('<p style="color: red;">请求失败: ' + error + '，请稍后重试</p>');
+                                $('#ai-response').show();
+                            }
+                        });
+                    }
+                    
+                    function videoToText() {
+                        // 获取视频路径和ID
+                        var videoPath = '<%=request.getContextPath()%><%=request.getAttribute("dizhi")%>';
+                        var videoId = '<%=request.getAttribute("shipingID")%>';
+                        
+                        console.log('视频路径:', videoPath);
+                        console.log('视频ID:', videoId);
+                        
+                        $.ajax({
+                            url: '<%=request.getContextPath()%>/videoToText',
+                            type: 'POST',
+                            data: {
+                                videoPath: videoPath,
+                                videoId: videoId
+                            },
+                            success: function(response) {
+                                if(response) {
+                                    console.log('视频转文字结果:', response);
                                     var jsonObject = JSON.parse(response);
                                     if(jsonObject) {
                                         console.log("success");
-                                        $('#ai-response-content').html('<p><strong>AI:</strong> ' + jsonObject.response + '</p>');
+                                        $('#ai-response-content').html('<p><strong>视频转文字:</strong> ' + jsonObject.response + '</p>');
                                         $('#ai-response').show();
-                                        $('#ai-message-input').val(''); // 清空输入框
                                     } else {
                                         console.log("fail");
                                         $('#ai-response-content').html('<p style="color: red;">错误: ' + (jsonObject.error || '未知错误') + '</p>');
                                         $('#ai-response').show();
                                     }
                                 } else {
-                                    console.log('AI的回复:', response);
+                                    console.log('视频转文字结果:', response);
                                     $('#ai-response-content').html('<p style="color: red;">错误: 服务器返回数据格式不正确</p>');
                                     $('#ai-response').show();
                                 }
@@ -1303,7 +1361,119 @@
                                 sendToAI();
                             }
                         });
+                        
+                        // 页面加载时检查视频是否已转文字
+                        checkVideoToTextStatus();
                     });
+                    
+                    function checkVideoToTextStatus() {
+                        var videoPath = '<%=request.getAttribute("dizhi")%>';
+                        var videoId = '<%=request.getAttribute("shipingID")%>';
+                        
+                        console.log('检查视频转文字状态，视频路径:', videoPath);
+                        console.log('视频ID:', videoId);
+                        
+                        $.ajax({
+                            url: '<%=request.getContextPath()%>/checkVideoToTextStatus',
+                            type: 'POST',
+                            data: {
+                                videoPath: videoPath,
+                                videoId: videoId
+                            },
+                            success: function(response) {
+                                if(response) {
+                                    console.log('检查结果:', response);
+                                    try {
+                                        var jsonObject = JSON.parse(response);
+                                        if(jsonObject && jsonObject.success) {
+                                            // 显示状态信息
+                                            $('#status-message').html('<strong>视频转文字状态:</strong> ' + jsonObject.response);
+                                            $('#video-to-text-status').show();
+                                            
+                                            // 如果已存在，可以显示不同样式
+                                            if (jsonObject.response && jsonObject.response.includes('已转换过文字')) {
+                                                $('#video-to-text-status').css('background-color', '#e6ffe6'); // 绿色背景
+                                                // 如果已转换过文字，可能不需要再次转换
+                                            } else {
+                                                $('#video-to-text-status').css('background-color', '#fff8e6'); // 黄色背景
+                                            }
+                                        } else {
+                                            console.log('检查失败:', jsonObject ? jsonObject.error : '未知错误');
+                                        }
+                                    } catch(e) {
+                                        // 如果响应不是JSON格式，直接显示响应内容
+                                        console.log('响应不是JSON格式:', response);
+                                        $('#status-message').html('<strong>视频转文字状态:</strong> ' + response);
+                                        $('#video-to-text-status').show();
+                                    }
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.log('检查视频转文字状态失败:', xhr.responseText, status, error);
+                            }
+                        });
+                    }
+                    
+                    // 只在视频转文字按钮被点击时执行转换功能
+                    function videoToText() {
+                        var videoPath = '<%=request.getAttribute("dizhi")%>';
+                        var videoId = '<%=request.getAttribute("shipingID")%>';
+                        
+                        console.log('执行视频转文字，视频路径:', videoPath);
+                        console.log('视频ID:', videoId);
+                        
+                        $.ajax({
+                            url: '<%=request.getContextPath()%>/videoToText',
+                            type: 'POST',
+                            data: {
+                                videoPath: videoPath,
+                                videoId: videoId
+                            },
+                            success: function(response) {
+                                if(response) {
+                                    console.log('视频转文字结果:', response);
+                                    try {
+                                        var jsonObject = JSON.parse(response);
+                                        if(jsonObject && jsonObject.success) {
+                                            console.log("success");
+                                            $('#ai-response-content').html('<p><strong>视频转文字:</strong> ' + jsonObject.response + '</p>');
+                                            $('#ai-response').show();
+                                            
+                                            // 更新状态显示
+                                            $('#status-message').html('<strong>视频转文字状态:</strong> ' + jsonObject.response);
+                                            $('#video-to-text-status').show();
+                                            
+                                            // 根据结果更新背景色
+                                            if (jsonObject.response && jsonObject.response.includes('已转换过文字')) {
+                                                $('#video-to-text-status').css('background-color', '#e6ffe6'); // 绿色背景
+                                            } else {
+                                                $('#video-to-text-status').css('background-color', '#fff8e6'); // 黄色背景
+                                            }
+                                        } else {
+                                            console.log("fail");
+                                            var errorMsg = jsonObject && jsonObject.error ? jsonObject.error : '未知错误';
+                                            $('#ai-response-content').html('<p style="color: red;">错误: ' + errorMsg + '</p>');
+                                            $('#ai-response').show();
+                                        }
+                                    } catch(e) {
+                                        // 如果响应不是JSON格式，直接显示响应内容
+                                        console.log('响应不是JSON格式:', response);
+                                        $('#ai-response-content').html('<p><strong>视频转文字:</strong> ' + response + '</p>');
+                                        $('#ai-response').show();
+                                    }
+                                } else {
+                                    console.log('视频转文字结果:', response);
+                                    $('#ai-response-content').html('<p style="color: red;">错误: 服务器返回数据格式不正确</p>');
+                                    $('#ai-response').show();
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.log('AJAX请求错误:', xhr.responseText, status, error);
+                                $('#ai-response-content').html('<p style="color: red;">请求失败: ' + error + '，请稍后重试</p>');
+                                $('#ai-response').show();
+                            }
+                        });
+                    }
                 </script>
 
 

@@ -72,7 +72,67 @@ public class AiController {
         }
         return result;
     }
+    
+    // 处理视频音频转文字请求
+    @RequestMapping(value = "/videoToText", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> videoToText(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> result = new HashMap<>();
 
+        try {
+            String videoPath = request.getParameter("videoPath");
+            String videoIdStr = request.getParameter("videoId");
+            
+            if (videoPath == null || videoPath.trim().isEmpty() || videoIdStr == null || videoIdStr.trim().isEmpty()) {
+                result.put("success", false);
+                result.put("error", "视频路径和视频ID不能为空");
+                return result;
+            }
+            
+            int videoId = Integer.parseInt(videoIdStr);
+            
+            String aiResponse = aiService.processVideoToTextWithJsonCheck(videoId, videoPath);
+            result.put("success", true);
+            result.put("response", aiResponse);
+
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("error", "视频转文字服务调用失败: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    // 检查视频转文字状态
+    @RequestMapping(value = "/checkVideoToTextStatus", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> checkVideoToTextStatus(HttpServletRequest request) {
+        Map<String, Object> result = new HashMap<>();
+
+        try {
+            String videoPath = request.getParameter("videoPath");
+            String videoIdStr = request.getParameter("videoId");
+            
+            if (videoPath == null || videoPath.trim().isEmpty() || videoIdStr == null || videoIdStr.trim().isEmpty()) {
+                result.put("success", false);
+                result.put("error", "视频路径和视频ID不能为空");
+                return result;
+            }
+            
+            int videoId = Integer.parseInt(videoIdStr);
+            
+            String status = aiService.checkVideoToTextStatus(videoId, videoPath);
+            result.put("success", true);
+            result.put("response", status);
+
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("error", "检查视频转文字状态失败: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
     // 处理视频评论AI分析
     @RequestMapping(value = "/videoAnalysis", method = RequestMethod.POST)
     @ResponseBody
