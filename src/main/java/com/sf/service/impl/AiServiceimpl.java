@@ -37,6 +37,15 @@ public class AiServiceimpl implements AiService {
     private com.sf.service.Audioservice audioService;
     
     @Autowired
+    private com.sf.service.Danmuservice danmuService;
+    
+    @Autowired
+    private com.sf.service.MessageService messageService;
+    
+    @Autowired
+    private com.sf.service.UserListService userListService;
+    
+    @Autowired
     private com.sf.dao.JsonDao jsonDao;
 
     @Override
@@ -421,6 +430,21 @@ public class AiServiceimpl implements AiService {
         return projectPath;
     }
     
+    // Java 8 兼容的文件读取方法
+    private String readFileContent(File file) throws IOException {
+        StringBuilder content = new StringBuilder();
+        try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (content.length() > 0) {
+                    content.append("\n");
+                }
+                content.append(line);
+            }
+        }
+        return content.toString();
+    }
+    
     @Override
     public String chatWithDeepSeek(String userMessage) throws Exception {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -475,5 +499,103 @@ public class AiServiceimpl implements AiService {
             }
         }
         return "无法获取AI回复";
+    }
+    
+    @Override
+    public String generateFullInfoJson(int videoId, String videoPath) throws Exception {
+        try {
+            // 1. 从视频路径获取视频文件名（不含扩展名）
+            String videoFileName = new File(videoPath).getName();
+            String videoNameWithoutExt = videoFileName.substring(0, videoFileName.lastIndexOf('.'));
+            
+            // 2. 读取原始的视频转文字JSON文件
+            String jsonDir = "src/main/webapp/static/json";
+            String jsonPath = jsonDir + "/" + videoNameWithoutExt + ".json";
+            File jsonFile = new File(jsonPath);
+            
+            String videoTranscript = "";
+            if (jsonFile.exists()) {
+                // 读取现有JSON内容 - 使用Java 8兼容方式
+                videoTranscript = readFileContent(jsonFile);
+            } else {
+                // 如果没有转文字文件，先进行视频转文字
+                String audioDir = "src/main/webapp/static/audio";
+                String audioPath = audioDir + "/" + videoNameWithoutExt + ".mp3";
+                
+                // 确保音频目录存在
+                File audioDirectory = new File(audioDir);
+                if (!audioDirectory.exists()) {
+                    audioDirectory.mkdirs();
+                }
+                
+                // 检查音频文件是否存在，如果不存在则提取音频
+                File audioFile = new File(audioPath);
+                if (!audioFile.exists()) {
+                    // 提取音频的逻辑
+                    if (!extractAudioFromVideo(videoPath, audioPath)) {
+                        throw new RuntimeException("提取音频失败");
+                    }
+                }
+                
+                // 将音频转为文字
+                videoTranscript = voiceToText(audioPath);
+                
+                // 将转录结果保存为JSON文件
+                saveTranscriptionToJson(videoTranscript, jsonPath);
+            }
+            
+            // 3. 获取弹幕数据
+            List<com.sf.entity.Danmu> danmuList = danmuService.readDanmuByVid(videoId);
+            
+            // 确保弹幕列表不为null
+            if (danmuList == null) {
+                danmuList = java.util.Collections.emptyList();
+            }
+            
+            // 4. 获取评论数据
+            // 通过查询数据库获取与视频相关的评论
+            List<com.sf.entity.messageEntity> messageList = userListService.messagelist(String.valueOf(videoId));
+            
+            // 确保评论列表不为null
+            if (messageList == null) {
+                messageList = java.util.Collections.emptyList();
+            }
+            
+            // 5. 构建完整信息JSON
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> fullInfo = new HashMap<>();
+            fullInfo.put("videoTranscript", videoTranscript);
+            fullInfo.put("danmuList", danmuList);
+            fullInfo.put("messageList", messageList);
+            
+            // 6. 创建json_all目录（如果不存在）
+            String webappPath = getWebAppPath();
+            String fullJsonDir = webappPath + File.separator + "static" + File.separator + "json_all";
+            File fullJsonDirectory = new File(fullJsonDir);
+            if (!fullJsonDirectory.exists()) {
+                boolean created = fullJsonDirectory.mkdirs();
+                if (created) {
+                    System.out.println("创建json_all目录成功: " + fullJsonDirectory.getAbsolutePath());
+                } else {
+                    System.out.println("创建json_all目录失败或目录已存在: " + fullJsonDirectory.getAbsolutePath());
+                }
+            }
+            
+            // 7. 生成完整信息JSON文件
+            String fullJsonPath = fullJsonDir + File.separator + videoNameWithoutExt + ".json";
+            String fullJsonContent = mapper.writeValueAsString(fullInfo);
+            
+            // 8. 写入完整信息JSON文件
+            try (FileWriter writer = new FileWriter(fullJsonPath)) {
+                writer.write(fullJsonContent);
+                System.out.println("完整信息JSON文件写入成功: " + fullJsonPath);
+            }
+            
+            return "完整信息JSON生成成功，文件已保存到: " + fullJsonPath;
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("生成完整信息JSON失败: " + e.getMessage());
+        }
     }
 }

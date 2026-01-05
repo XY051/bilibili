@@ -153,4 +153,34 @@ public class AiController {
 
         return result;
     }
+    
+    // 生成全信息JSON文件
+    @RequestMapping(value = "/generateFullJson", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> generateFullJson(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> result = new HashMap<>();
+
+        try {
+            String videoPath = request.getParameter("videoPath");
+            String videoIdStr = request.getParameter("videoId");
+            
+            if (videoPath == null || videoPath.trim().isEmpty() || videoIdStr == null || videoIdStr.trim().isEmpty()) {
+                result.put("success", false);
+                result.put("error", "视频路径和视频ID不能为空");
+                return result;
+            }
+            
+            int videoId = Integer.parseInt(videoIdStr);
+            
+            String aiResponse = aiService.generateFullInfoJson(videoId, videoPath);
+            result.put("success", true);
+            result.put("response", aiResponse);
+
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("error", "生成全信息JSON失败: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return result;
+    }
 }

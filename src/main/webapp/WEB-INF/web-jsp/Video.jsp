@@ -1193,8 +1193,8 @@
                         <button onclick="sendToAI()" class="btn btn-primary" style="margin-top: 10px; margin-right: 10px;">
                             发送给Deepseek
                         </button>
-                        <button onclick="voiceToText()" class="btn btn-secondary" style="margin-top: 10px;">
-                            音频转文字
+                        <button onclick="generateFullJson()" class="btn btn-secondary" style="margin-top: 10px;">
+                            生成全信息json生成
                         </button>
                         <button onclick="videoToText()" class="btn btn-info" style="margin-top: 10px; margin-left: 10px;">
                             视频转文字
@@ -1410,6 +1410,66 @@
                             },
                             error: function(xhr, status, error) {
                                 console.log('检查视频转文字状态失败:', xhr.responseText, status, error);
+                            }
+                        });
+                    }
+                    
+                    function generateFullJson() {
+                        var videoPath = '<%=request.getAttribute("dizhi")%>';
+                        var videoId = '<%=request.getAttribute("shipingID")%>';
+                        
+                        console.log('生成全信息JSON，视频路径:', videoPath);
+                        console.log('视频ID:', videoId);
+                        
+                        $.ajax({ 
+                            url: '<%=request.getContextPath()%>/generateFullJson',
+                            type: 'POST',
+                            data: {
+                                videoPath: videoPath,
+                                videoId: videoId
+                            },
+                            success: function(response) {
+                                if(response) {
+                                    console.log('生成全信息JSON结果:', response);
+                                    try {
+                                        var jsonObject = JSON.parse(response);
+                                        if(jsonObject && jsonObject.success) {
+                                            console.log("success");
+                                            $('#ai-response-content').html('<p><strong>生成全信息JSON:</strong> ' + jsonObject.response + '</p>');
+                                            $('#ai-response').show();
+                                            
+                                            // 更新状态显示
+                                            $('#status-message').html('<strong>全信息JSON生成状态:</strong> ' + jsonObject.response);
+                                            $('#video-to-text-status').show();
+                                            
+                                            // 根据结果更新背景色
+                                            if (jsonObject.response && jsonObject.response.includes('已生成')) {
+                                                $('#video-to-text-status').css('background-color', '#e6ffe6'); // 绿色背景
+                                            } else {
+                                                $('#video-to-text-status').css('background-color', '#fff8e6'); // 黄色背景
+                                            }
+                                        } else {
+                                            console.log("fail");
+                                            var errorMsg = jsonObject && jsonObject.error ? jsonObject.error : '未知错误';
+                                            $('#ai-response-content').html('<p style="color: red;">错误: ' + errorMsg + '</p>');
+                                            $('#ai-response').show();
+                                        }
+                                    } catch(e) {
+                                        // 如果响应不是JSON格式，直接显示响应内容
+                                        console.log('响应不是JSON格式:', response);
+                                        $('#ai-response-content').html('<p><strong>生成全信息JSON:</strong> ' + response + '</p>');
+                                        $('#ai-response').show();
+                                    }
+                                } else {
+                                    console.log('生成全信息JSON结果:', response);
+                                    $('#ai-response-content').html('<p style="color: red;">错误: 服务器返回数据格式不正确</p>');
+                                    $('#ai-response').show();
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.log('AJAX请求错误:', xhr.responseText, status, error);
+                                $('#ai-response-content').html('<p style="color: red;">请求失败: ' + error + '，请稍后重试</p>');
+                                $('#ai-response').show();
                             }
                         });
                     }
