@@ -1309,7 +1309,7 @@
                         });
                     }
 
-                    // 发送消息给AI
+                    // 发送消息给AI（结合视频JSON信息）
                     function sendToAI() {
                         var message = $('#ai-message-input').val();
                         if (!message.trim()) {
@@ -1317,27 +1317,46 @@
                             return;
                         }
                         console.log('发送给AI的消息:', message);
-
+                        
+                        // 获取视频路径和ID
+                        var videoPath = '${param.dizhi}';
+                        var videoId = '${param.shipingID}';
+                        
+                        console.log('视频路径:', videoPath);
+                        console.log('视频ID:', videoId);
+                        
+                        // 调用后端API，自动生成JSON并结合用户问题发送给AI
                         $.ajax({
-                            url: '<%=request.getContextPath()%>/chat',
+                            url: '<%=request.getContextPath()%>/analyzeVideoWithJson',
                             type: 'POST',
                             data: {
-                                message: message
+                                videoPath: videoPath,
+                                videoId: videoId,
+                                question: message
                             },
                             success: function(response) {
                                 // 首先检查response是否存在且为对象
                                 if(response) {
                                     console.log('AI的回复:', response);
-                                    var jsonObject = JSON.parse(response);
-                                    if(jsonObject) {
-                                        console.log("success");
-                                        $('#ai-response-content').html('<p><strong>AI:</strong> ' + jsonObject.response + '</p>');
+                                    try {
+                                        var jsonObject = JSON.parse(response);
+                                        if(jsonObject && jsonObject.success) {
+                                            console.log("success");
+                                            $('#ai-response-content').html('<p><strong>AI:</strong> ' + jsonObject.response + '</p>');
+                                            $('#ai-response').show();
+                                            $('#ai-message-input').val(''); // 清空输入框
+                                        } else {
+                                            console.log("fail");
+                                            var errorMsg = jsonObject && jsonObject.error ? jsonObject.error : '未知错误';
+                                            $('#ai-response-content').html('<p style="color: red;">错误: ' + errorMsg + '</p>');
+                                            $('#ai-response').show();
+                                        }
+                                    } catch(e) {
+                                        // 如果响应不是JSON格式，直接显示响应内容
+                                        console.log('响应不是JSON格式:', response);
+                                        $('#ai-response-content').html('<p><strong>AI:</strong> ' + response + '</p>');
                                         $('#ai-response').show();
                                         $('#ai-message-input').val(''); // 清空输入框
-                                    } else {
-                                        console.log("fail");
-                                        $('#ai-response-content').html('<p style="color: red;">错误: ' + (jsonObject.error || '未知错误') + '</p>');
-                                        $('#ai-response').show();
                                     }
                                 } else {
                                     console.log('AI的回复:', response);
@@ -1345,8 +1364,9 @@
                                     $('#ai-response').show();
                                 }
                             },
-                            error: function() {
-                                $('#ai-response-content').html('<p style="color: red;">请求失败，请稍后重试</p>');
+                            error: function(xhr, status, error) {
+                                console.log('AJAX请求错误:', xhr.responseText, status, error);
+                                $('#ai-response-content').html('<p style="color: red;">请求失败: ' + error + '，请稍后重试</p>');
                                 $('#ai-response').show();
                             }
                         });
@@ -2309,6 +2329,7 @@
 
             url: '<%=request.getContextPath()%><%=request.getAttribute("dizhi")%>',
             pic: '',
+            type: 'auto'
 
         },
         danmaku: {
@@ -2318,11 +2339,31 @@
 
             /* api: 'http://127.0.0.1:8000/get_dm',*/
             addition: ['<%=request.getContextPath()%>/insertdanmu/']
-        }
+        },
+        volume: 1.0, // 设置默认音量为最大
+        playbackSpeed: [0.5, 0.75, 1.0, 1.25, 1.5, 2.0], // 添加播放速度选项
+        error: function(msg) {
+            console.error('DPlayer error:', msg);
+        },
+        mutex: true // 同时只播放一个视频
     });
 
     dp.danmaku.opacity(1);
-
+    
+    // 添加额外的错误处理和音频检测
+    dp.on('error', function(err) {
+        console.error('视频播放错误:', err);
+        alert('视频播放出现错误，可能是视频格式或编码问题，请尝试转换视频格式');
+    });
+    
+    dp.on('canplay', function() {
+        console.log('视频可以播放');
+        // 检查音量是否静音
+        if(dp.video.muted) {
+            console.log('视频被静音，尝试取消静音');
+            dp.video.muted = false;
+        }
+    });
 
     function alert_back(text) {
         $(".alert_back").html(text).show();

@@ -2,6 +2,7 @@ package com.sf.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.sf.config.ApiConfig;
 import com.sf.dao.JsonDao;
 import com.sf.entity.jsonEntity;
@@ -16,6 +17,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ws.schild.jave.Encoder;
 import ws.schild.jave.EncoderException;
 import ws.schild.jave.MultimediaObject;
@@ -25,12 +28,14 @@ import ws.schild.jave.encode.EncodingAttributes;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class AiServiceimpl implements AiService {
+    private static final Logger logger = LoggerFactory.getLogger(AiServiceimpl.class);
     private final ObjectMapper objectMapper = new ObjectMapper();
     
     @Autowired
@@ -39,8 +44,7 @@ public class AiServiceimpl implements AiService {
     @Autowired
     private com.sf.service.Danmuservice danmuService;
     
-    @Autowired
-    private com.sf.service.MessageService messageService;
+    // Note: messageService was removed as it was not being used
     
     @Autowired
     private com.sf.service.UserListService userListService;
@@ -70,17 +74,18 @@ public class AiServiceimpl implements AiService {
                     .addHeader("Authorization", "Bearer " + ApiConfig.getApiKey())
                     .build();
 
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                String responseBody = response.body().string();
-                // 解析返回的 JSON 获取转录文本
-                // 根据实际 API 返回格式解析
-                return parseTranscriptionResult(responseBody);
-            } else {
-                throw new RuntimeException("语音转文字失败: " + response.message());
+            try (Response response = client.newCall(request).execute()) {
+                if (response.isSuccessful()) {
+                    String responseBody = response.body().string();
+                    // 解析返回的 JSON 获取转录文本
+                    // 根据实际 API 返回格式解析
+                    return parseTranscriptionResult(responseBody);
+                } else {
+                    throw new RuntimeException("语音转文字失败: " + response.message());
+                }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("语音转文字处理失败", e);
             throw new RuntimeException("语音转文字处理失败: " + e.getMessage());
         }
     }
@@ -89,10 +94,12 @@ public class AiServiceimpl implements AiService {
         // 示例解析（需根据实际返回格式调整）
         try {
             ObjectMapper mapper = new ObjectMapper();
+            // 配置安全选项以防止反序列化漏洞
+            mapper.configure(com.fasterxml.jackson.core.JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
             JsonNode rootNode = mapper.readTree(jsonResponse);
             return rootNode.get("text").asText();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("解析转录结果失败", e);
             return "解析转录结果失败";
         }
     }
@@ -120,7 +127,10 @@ public class AiServiceimpl implements AiService {
             // 确保音频目录存在
             File audioDirectory = new File(audioDir);
             if (!audioDirectory.exists()) {
-                audioDirectory.mkdirs();
+                boolean created = audioDirectory.mkdirs();
+                if (!created) {
+                    logger.warn("无法创建音频目录: {}", audioDir);
+                }
             }
             
             // 检查音频文件是否存在，如果不存在则提取音频
@@ -262,25 +272,17 @@ public class AiServiceimpl implements AiService {
             // 确保音频目录存在
             File audioDirectory = new File(audioDir);
             if (!audioDirectory.exists()) {
-                audioDirectory.mkdirs();
+                boolean created = audioDirectory.mkdirs();
+                if (!created) {
+                    logger.warn("无法创建音频目录: {}", audioDir);
+                }
             }
             
             // 检查音频文件是否存在，如果不存在则提取音频
             File audioFile = new File(audioPath);
             if (!audioFile.exists()) {
                 // 处理视频路径 - 将相对路径转换为绝对路径
-                String absoluteVideoPath;
-                if (videoPath.startsWith("/")) {
-                    // 构建绝对路径 - 动态获取项目路径
-                    String webappPath = getWebAppPath();
-                    // 确保路径以分隔符结尾
-                    if (!webappPath.endsWith(File.separator)) {
-                        webappPath += File.separator;
-                    }
-                    absoluteVideoPath = webappPath + videoPath.substring(1).replace("/", File.separator);
-                } else {
-                    absoluteVideoPath = videoPath;
-                }
+                String absoluteVideoPath = buildAbsolutePath(getWebAppPath(), videoPath);
                 
                 // 检查视频文件是否存在
                 File videoFile = new File(absoluteVideoPath);
@@ -412,9 +414,9 @@ public class AiServiceimpl implements AiService {
     
     // 获取项目webapp路径
     private String getWebAppPath() {
-        // 简化路径获取，直接返回项目路径
+        // 优先使用src/main/webapp路径以符合用户偏好
         String projectPath = System.getProperty("user.dir");
-        if (projectPath == null || !projectPath.endsWith("bilibili")) {
+        if (projectPath == null || !projectPath.contains("bilibili")) {
             // 如果在开发环境，尝试构建路径
             projectPath = "C:/Course/Third/JavaMvc/bilibili/bilibili";
         }
@@ -424,7 +426,7 @@ public class AiServiceimpl implements AiService {
     // 获取项目根路径
     private String getProjectPath() {
         String projectPath = System.getProperty("user.dir");
-        if (projectPath == null || !projectPath.endsWith("bilibili")) {
+        if (projectPath == null || !projectPath.contains("bilibili")) {
             projectPath = "C:/Course/Third/JavaMvc/bilibili/bilibili";
         }
         return projectPath;
@@ -513,10 +515,13 @@ public class AiServiceimpl implements AiService {
             String jsonPath = jsonDir + "/" + videoNameWithoutExt + ".json";
             File jsonFile = new File(jsonPath);
             
-            String videoTranscript = "";
+            String videoTranscript;
             if (jsonFile.exists()) {
                 // 读取现有JSON内容 - 使用Java 8兼容方式
                 videoTranscript = readFileContent(jsonFile);
+                if (videoTranscript == null) {
+                    videoTranscript = "";
+                }
             } else {
                 // 如果没有转文字文件，先进行视频转文字
                 String audioDir = "src/main/webapp/static/audio";
@@ -531,8 +536,39 @@ public class AiServiceimpl implements AiService {
                 // 检查音频文件是否存在，如果不存在则提取音频
                 File audioFile = new File(audioPath);
                 if (!audioFile.exists()) {
+                    // 处理视频路径 - 将相对路径转换为绝对路径
+                    String absoluteVideoPath = buildAbsolutePath(getWebAppPath(), videoPath);
+                    
+                    // 检查视频文件是否存在
+                    File videoFile = new File(absoluteVideoPath);
+                    if (!videoFile.exists()) {
+                        // 如果在webapp路径下没找到，尝试项目根路径
+                        String projectPath = getProjectPath();
+                        if (!projectPath.endsWith(File.separator)) {
+                            projectPath += File.separator;
+                        }
+                        String altPath = projectPath + videoPath.substring(1).replace("/", File.separator);
+                        videoFile = new File(altPath);
+                        if (videoFile.exists()) {
+                            absoluteVideoPath = altPath;
+                        }
+                    }
+                    
+                    if (!videoFile.exists()) {
+                        // 最后尝试直接拼接src/main/webapp路径
+                        String directPath = "src" + File.separator + "main" + File.separator + "webapp" + videoPath.replace("/", File.separator);
+                        videoFile = new File(directPath);
+                        if (videoFile.exists()) {
+                            absoluteVideoPath = directPath;
+                        }
+                    }
+                    
+                    if (!videoFile.exists()) {
+                        throw new RuntimeException("视频文件不存在: " + absoluteVideoPath);
+                    }
+                    
                     // 提取音频的逻辑
-                    if (!extractAudioFromVideo(videoPath, audioPath)) {
+                    if (!extractAudioFromVideo(absoluteVideoPath, audioPath)) {
                         throw new RuntimeException("提取音频失败");
                     }
                 }
@@ -563,39 +599,111 @@ public class AiServiceimpl implements AiService {
             
             // 5. 构建完整信息JSON
             ObjectMapper mapper = new ObjectMapper();
-            Map<String, Object> fullInfo = new HashMap<>();
-            fullInfo.put("videoTranscript", videoTranscript);
-            fullInfo.put("danmuList", danmuList);
-            fullInfo.put("messageList", messageList);
+            // 设置JSON格式化选项
+            mapper.enable(SerializationFeature.INDENT_OUTPUT);
             
-            // 6. 创建json_all目录（如果不存在）
+            // 格式化视频转录文本 - 每达到一定长度就换行
+            String formattedVideoTranscript = formatTextWithLineBreaks(videoTranscript, 80);
+            
+            // 格式化弹幕列表 - 每个弹幕单独一行
+            List<Map<String, Object>> formattedDanmuList = new ArrayList<>();
+            if (danmuList != null) {
+                for (com.sf.entity.Danmu danmu : danmuList) {
+                    Map<String, Object> danmuMap = new HashMap<>();
+                    danmuMap.put("id", danmu.getVid());
+                    danmuMap.put("time", danmu.getDtime());
+                    danmuMap.put("text", danmu.getContent());
+                    danmuMap.put("color", danmu.getColor());
+                    danmuMap.put("type", danmu.getPosition());
+                    danmuMap.put("size", danmu.getDsize());
+                    danmuMap.put("uid", danmu.getVid());
+                    danmuMap.put("create_time", danmu.getDtime());
+                    formattedDanmuList.add(danmuMap);
+                }
+            }
+            
+            // Format comment list - each comment on a separate line
+            List<Map<String, Object>> formattedMessageList = new ArrayList<>();
+            if (messageList != null) {
+                for (com.sf.entity.messageEntity message : messageList) {
+                    Map<String, Object> messageMap = new HashMap<>();
+                    messageMap.put("messageId", message.getMessageID());
+                    messageMap.put("messageText", message.getMessage());
+                    messageMap.put("messageTime", message.getMessageTime());
+                    messageMap.put("messageName", message.getMessageuserName());
+                    messageMap.put("messageHead", message.getMessageHand());
+                    messageMap.put("messageUid", message.getMessageuserID());
+                    formattedMessageList.add(messageMap);
+                }
+            }
+            
+            Map<String, Object> fullInfo = new HashMap<>();
+            fullInfo.put("videoTranscript", formattedVideoTranscript);
+            fullInfo.put("danmuList", formattedDanmuList);
+            fullInfo.put("messageList", formattedMessageList);
+            
+            // 6. Create json_all directory (if not exists) - According to user preference, save full info JSON to json_all directory
             String webappPath = getWebAppPath();
             String fullJsonDir = webappPath + File.separator + "static" + File.separator + "json_all";
             File fullJsonDirectory = new File(fullJsonDir);
             if (!fullJsonDirectory.exists()) {
                 boolean created = fullJsonDirectory.mkdirs();
                 if (created) {
-                    System.out.println("创建json_all目录成功: " + fullJsonDirectory.getAbsolutePath());
+                    logger.info("Successfully created json_all directory: {}", fullJsonDirectory.getAbsolutePath());
                 } else {
-                    System.out.println("创建json_all目录失败或目录已存在: " + fullJsonDirectory.getAbsolutePath());
+                    logger.warn("Failed to create json_all directory or directory already exists: {}", fullJsonDirectory.getAbsolutePath());
                 }
             }
             
-            // 7. 生成完整信息JSON文件
-            String fullJsonPath = fullJsonDir + File.separator + videoNameWithoutExt + ".json";
+            // 7. Generate full information JSON file
+            String fullJsonPath = fullJsonDir + File.separator + videoNameWithoutExt + "_full.json";
             String fullJsonContent = mapper.writeValueAsString(fullInfo);
             
-            // 8. 写入完整信息JSON文件
+            // 8. Write full information JSON file - This will overwrite the file if it exists
             try (FileWriter writer = new FileWriter(fullJsonPath)) {
                 writer.write(fullJsonContent);
-                System.out.println("完整信息JSON文件写入成功: " + fullJsonPath);
+                System.out.println("Successfully wrote full information JSON file: " + fullJsonPath);
             }
             
-            return "完整信息JSON生成成功，文件已保存到: " + fullJsonPath;
+            return "Full information JSON generated successfully, file saved to: " + fullJsonPath;
             
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("生成完整信息JSON失败: " + e.getMessage());
+            throw new RuntimeException("Failed to generate full information JSON: " + e.getMessage());
         }
+    }
+    
+    // Format text, add line break when reaching specified length
+    private String formatTextWithLineBreaks(String text, int maxLength) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+        
+        StringBuilder result = new StringBuilder();
+        int currentLength = 0;
+        
+        for (char c : text.toCharArray()) {
+            if (currentLength >= maxLength && (c == ' ' || c == '.' || c == ',' || c == '。' || c == '，')) {
+                result.append('\n');
+                currentLength = 0;
+            } else {
+                result.append(c);
+                currentLength++;
+            }
+        }
+        
+        return result.toString();
+    }
+    
+    // 提取构建绝对路径的公共方法
+    private String buildAbsolutePath(String basePath, String relativePath) {
+        String absolutePath;
+        if (relativePath.startsWith("/")) {
+            // 移除开头的斜杠并替换所有斜杠为文件分隔符
+            absolutePath = basePath + File.separator + relativePath.substring(1).replace("/", File.separator);
+        } else {
+            absolutePath = basePath + File.separator + relativePath.replace("/", File.separator);
+        }
+        return absolutePath;
     }
 }

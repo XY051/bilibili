@@ -1969,6 +1969,11 @@ public class T {
         String pre="{\"code\":0 ,\"data\":";
         String  s="{\"data\": [[0, 0, 16777215, \"用户\", \"ddd\"], [7, 0, 16777215, \"用户\", \"ewwqweew\"]], \"code\": 0}";
 
+        // 检查danmuList是否为空
+        if (danmuList == null || danmuList.isEmpty()) {
+            return "{\"code\":0 ,\"data\":[]}";
+        }
+
         //List<>
         String last="[";
 
