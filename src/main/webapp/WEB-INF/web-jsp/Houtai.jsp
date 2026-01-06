@@ -11,11 +11,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <base href="<%=basePath%>">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-
-
-
-
-
 <link rel="stylesheet" href="<%=request.getContextPath()%>/static/Houtai/css/style.css" type="text/css" />
 	<script
 	src="<%=request.getContextPath()%>/static/Homepage/js/sHover.min.js"></script>
@@ -89,41 +84,43 @@ function show_menuC(){
 			}
 	 }
 </script>
-</head>
 
-<body>
 <div class="header">
-	<div class="header03"></div>
 	<div class="header01"></div>
-	<div class="header02">注册用户信息管理系统</div> 
-	
+	<div class="header02">哔哩哔哩-管理员后台</div> 
+	<div class="header03"></div>
 </div>
+
 <div class="left" id="LeftBox">
 	<div class="left01">
-		<div class="left01_right"></div>
 		<div class="left01_left"></div>
 		<div class="left01_c">超级管理员：admin</div>
+		<div class="left01_right"></div>
 	</div>
-
 
 	<div class="left02">
 		<div class="left02down">
-			<div class="left02down01"><a  onclick="show_menuB(21)" href="javascript:;"><div id="Bf021" class="left02down01_img"></div>视频审核</a></div>
+			<div class="left02down01">
+                <div id="Bf021" class="left02down01_img"></div>
+                <span onclick="show_menuB(21)">视频审核</span>
+            </div>
 			<div class="left02down01_xia noneBox" id="Bli021">
 				<ul>
-					<li onmousemove="show_menu(21)" id="f021"><a >&middot;视频审核</a></li>
+					<li onmousemove="show_menu(21)" id="f021"><a>&middot;视频审核</a></li>
 				</ul>
 			</div>
-
 		</div>
 	</div>
 	
 	<div class="left02">
 		<div class="left02down">
-			<div class="left02down01"><a  onclick="show_menuB(22)" href="javascript:;"><div id="Bf022" class="left02down01_img"></div>音频管理</a></div>
+			<div class="left02down01">
+                <div id="Bf022" class="left02down01_img"></div>
+                <span onclick="show_menuB(22)">音频管理</span>
+            </div>
 			<div class="left02down01_xia noneBox" id="Bli022">
 				<ul>
-					<li onmousemove="show_menu(22)" id="f022"><a >&middot;批量提取音频</a></li>
+					<li onmousemove="show_menu(22)" id="f022"><a>&middot;批量提取音频</a></li>
 				</ul>
 			</div>
 		</div>
@@ -131,16 +128,21 @@ function show_menuC(){
 
 	<div class="left02">
 	  <div class="left02down">
-			<div class="left02down01"><a  onclick="show_menuB(80)" href="javascript:;"><div id="Bf080" class="left02down01_img"></div>用户信息查询</a></div>
+			<div class="left02down01">
+                <div id="Bf080" class="left02down01_img"></div>
+                <span onclick="show_menuB(80)">用户信息查询</span>
+            </div>
 			<div class="left02down01_xia noneBox" id="Bli080">
 				<ul>
 					<li onmousemove="show_menu(10)" id="f010"><a href="#">&middot;精确查询</a></li>
 					<li onmousemove="show_menu(11)" id="f011"><a href="#">&middot;组合条件查询</a></li>
 				</ul>
 			</div>
-		    <div class="left02down01"><a onclick="show_menuB(81)" href="javascript:;">
-		      <div id="Bf081" class="left02down01_img"></div>
-		      用户密码管理</a></div>
+		    
+            <div class="left02down01">
+                <div id="Bf081" class="left02down01_img"></div>
+                <span onclick="show_menuB(81)">用户密码管理</span>
+            </div>
 			<div class="left02down01_xia noneBox" id="Bli081">
 				<ul>
 					<li onmousemove="show_menu(12)" id="f012"><a href="#">&middot;找回密码</a></li>
@@ -150,82 +152,37 @@ function show_menuC(){
 		</div>
 	</div>
 
-
-
 	<div class="left02">
 		<div class="left02down">
-			<div class="left02down01"><a  onclick="show_menuB(85)" href="javascript:;"><div id="Bf085" class="left02down01_img"></div>留言管理</a></div>
+			<div class="left02down01">
+                <div id="Bf085" class="left02down01_img"></div>
+                <span onclick="show_menuB(85)">留言管理</span>
+            </div>
 			<div class="left02down01_xia noneBox" id="Bli085">
 				<ul>
 					<li onmousemove="show_menu(51)" id="f051"><a href="#">&middot;留言审核</a></li>
 				</ul>
 			</div>
-
-
 		</div>
-	</div
+	</div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	<!--
-    	作者：offline
-    	时间：2017-07-19
-    	描述：
-   
 	<div class="left02">
 		<div class="left02top">
-			<div class="left02top_right"></div>
 			<div class="left02top_left"></div>
-			<div class="left02top_c">用户分析</div>
+			<div class="left02top_c">系统管理</div>
+			<div class="left02top_right"></div>
 		</div>
 		<div class="left02down">
-			<div class="left02down01"><a  onclick="show_menuB(82)" href="javascript:;"><div id="Bf082" class="left02down01_img"></div>用户注册统计</a></div>
-			<div class="left02down01"><a href="#"><div class="left02down01_img"></div>用户登录统计</a></div>
-			<div class="left02down01"><a href="#"><div class="left02down01_img"></div>用户激活统计</a></div>
+			<div class="left02down01"><a href="#"><div class="left02down01_img"></div><span>权限管理</span></a></div>
+			<div class="left02down01"><a href="#"><div class="left02down01_img"></div><span>用户组管理</span></a></div>
+			<div class="left02down01"><a href="#"><div class="left02down01_img"></div><span>操作日志</span></a></div>
 		</div>
 	</div>
 	
-	<div class="left02">
-		<div class="left02top">
-			<div class="left02top_right"></div>
-			<div class="left02top_left"></div>
-			<div class="left02top_c">用户过滤</div>
-		</div>
-		<div class="left02down">
-			<div class="left02down01"><a href="#"><div class="left02down01_img"></div>过滤IP(段)</a></div>
-			<div class="left02down01"><a href="#"><div class="left02down01_img"></div>过滤用户名</a></div>
-		</div>
-	</div>
-	 -->
-	<div class="left02">
-		<div class="left02top">
-			<div class="left02top_right"></div>
-			<div class="left02top_left"></div>
-			<div class="left02top_c">系统管理</div>
-		</div>
-		<div class="left02down">
-			<div class="left02down01"><a href="#"><div class="left02down01_img"></div>权限管理</a></div>
-			<div class="left02down01"><a href="#"><div class="left02down01_img"></div>用户组管理</a></div>
-			<div class="left02down01"><a href="#"><div class="left02down01_img"></div>操作日志</a></div>
-		</div>
-	</div>
 	<div class="left01">
 		<div class="left03_right"></div>
+		<div class="left03_c"><a href="<%=request.getContextPath()%>/index.sf" style="color: #00a1d6; text-decoration: none;">安全退出</a></div>
 		<div class="left01_left"></div>
-		<div class="left03_c"><a href="<%=request.getContextPath()%>/index.sf" style="color: white; text-decoration: none;">安全退出</a></div>
 	</div>
 	
 	<script type="text/javascript">
@@ -279,15 +236,14 @@ function show_menuC(){
 		});
 	</script>
 </div>
-<div class="rrcc" id="RightBox">
-	<div class="center" id="Mobile" onclick="show_menuC()"></div>
-	<div class="right" id="li021">
 
+<div class="center" id="Mobile" onclick="show_menuC()"></div>
+
+<div class="rrcc" id="RightBox">
+	<div class="right" id="li021">
 		<div class="right01"><img src="<%=request.getContextPath()%>/static/Houtai/images/04.gif" /> 视频管理 &gt; <span>视频审核</span></div>
 
 		<table width="100%" height="100%" border="0" cellspacing="0" cellpadding="3">
-
-
 			<tr>
 				<td height="100%" valign="top">
 					<div style="overflow:auto;height:100%; width:100%">
@@ -307,11 +263,12 @@ function show_menuC(){
 									<TD  width="" align="center">${video.videoName}</TD>
 									<TD align="center"><a style="color: #0AB5DA" href="/bilibili/user_info?user_id=${video.user_id}">${video.userName}</a></TD>
 									<TD width="70" align="center">未审核</TD>
-
-									<TD width="160" align="center"><BUTTON style="height:21px; font-size:12px"
-																		   onClick="javascript:if (confirm('查看该信息？')) location.href='/bilibili/video.sf?dizhi=${video.videoAddress}&shipingID=${video.videoID}&isadmin=1';else return;">查看</BUTTON>
-										<BUTTON style="height:21px; font-size:12px" onClick="javascript:if (confirm('通过审核？')) location.href='/bilibili/checkvideo?s=1&video_id=${video.videoID}';else return;">通过
-										</BUTTON> <BUTTON style="height:21px; font-size:12px" onClick="javascript:if (confirm('不通过审核？')) location.href='/bilibili/checkvideo?s=0&video_id=${video.videoID}';else return;">不通过</BUTTON></TD>
+									<TD width="160" align="center">
+										<button style="height:28px; font-size:12px"
+										   onClick="javascript:if (confirm('查看该信息？')) location.href='/bilibili/video.sf?dizhi=${video.videoAddress}&shipingID=${video.videoID}&isadmin=1';else return;">查看</button>
+										<button style="height:28px; font-size:12px" onClick="javascript:if (confirm('通过审核？')) location.href='/bilibili/checkvideo?s=1&video_id=${video.videoID}';else return;">通过</button> 
+										<button style="height:28px; font-size:12px" onClick="javascript:if (confirm('不通过审核？')) location.href='/bilibili/checkvideo?s=0&video_id=${video.videoID}';else return;">不通过</button>
+									</TD>
 								</TR>
 							</c:forEach>
 						</table>
@@ -319,10 +276,7 @@ function show_menuC(){
 				</td>
 			</tr>
 		</table>
-
-
 	</div>
-
 
 	<div class="right noneBox" id="li051">
 		<div class="right01"><img src="<%=request.getContextPath()%>/static/Houtai/images/04.gif" /> 留言管理 &gt; <span>留言审核</span></div>
@@ -333,7 +287,7 @@ function show_menuC(){
 		<div style="padding: 20px;">
 			<h3>批量提取音频</h3>
 			<p>此功能将为所有尚未提取音频的视频文件提取音频，并保存为MP3格式。</p>
-			<button id="batchExtractBtn" style="background: #00a1d6; color: white; padding: 10px 20px; border: none; cursor: pointer;">
+			<button id="batchExtractBtn" style="background: #00a1d6; color: white; padding: 10px 20px; border: none; cursor: pointer; border-radius: 4px; font-size: 14px;">
 				开始批量提取音频
 			</button>
 			<div id="extractResult" style="margin-top: 15px; display: none;">
@@ -344,8 +298,8 @@ function show_menuC(){
 			<div id="loading" style="display: none; margin-top: 15px;">
 				正在处理，请稍候... <img src="<%=request.getContextPath()%>/static/Houtai/images/01.gif" alt="加载中..." width="16" height="16" />
 				<div id="progressContainer" style="margin-top: 10px; display: none;">
-					<div style="width: 100%; background-color: #f0f0f0; border-radius: 5px; overflow: hidden;">
-						<div id="progressBar" style="width: 0%; height: 20px; background-color: #4CAF50; text-align: center; line-height: 20px; color: white;">0%</div>
+					<div class="progress-container">
+						<div id="progressBar" class="progress-bar" style="width: 0%;">0%</div>
 					</div>
 					<div id="progressText">处理中...</div>
 				</div>
@@ -356,8 +310,6 @@ function show_menuC(){
 	<div class="right noneBox" id="li051">
 		<div class="right01"><img src="<%=request.getContextPath()%>/static/Houtai/images/04.gif" /> 留言管理 &gt; <span>留言审核</span></div>
 		<table width="100%" height="100%" border="0" cellspacing="0" cellpadding="3">
-
-
 			<tr>
 				<td height="100%" valign="top">
 					<div style="overflow:auto;height:100%; width:100%">
@@ -378,90 +330,48 @@ function show_menuC(){
 									<TD align="center"><a style="color: #0AB5DA" href="/bilibili/user_info?user_id=${message.messageuserID}">${message.messageuserName}</a></TD>
 									<TD width="160" align="center">${message.videoName}</TD>
 									<TD width="160" align="center">
-										</BUTTON> <BUTTON style="height:21px; font-size:12px" onClick="javascript:if (confirm('是否通过该评论？')) location.href='/bilibili/checkmessage?id=${message.messageID}';else return;">通过</BUTTON>
-
-										<BUTTON style="height:21px; font-size:12px"
-																		   onClick="javascript:if (confirm('查看该信息？')) location.href='/bilibili/video.sf?dizhi=${message.address}&shipingID=${message.messagevideoID}&isadmin=1';else return;">查看</BUTTON>
-
-										</BUTTON> <BUTTON style="height:21px; font-size:12px" onClick="javascript:if (confirm('是否删除该评论？')) location.href='/bilibili/delmessage?id=${message.messageID}';else return;">删除</BUTTON></TD>
-
+										<button style="height:28px; font-size:12px" onClick="javascript:if (confirm('是否通过该评论？')) location.href='/bilibili/checkmessage?id=${message.messageID}';else return;">通过</button>
+										<button style="height:28px; font-size:12px"
+										   onClick="javascript:if (confirm('查看该信息？')) location.href='/bilibili/video.sf?dizhi=${message.address}&shipingID=${message.messagevideoID}&isadmin=1';else return;">查看</button>
+										<button style="height:28px; font-size:12px" onClick="javascript:if (confirm('是否删除该评论？')) location.href='/bilibili/delmessage?id=${message.messageID}';else return;">删除</button>
+									</TD>
 								</TR>
 							</c:forEach>
 						</table>
 					</div>
 				</td>
 			</tr>
-
 		</table>
-		<div align="center" style="margin-top: " ><BUTTON style="height:21px; font-size:12px" onClick="javascript:location.href='/bilibili/Houtai.sf?s=${s}';">下一页</BUTTON></div>
-
-
-
-
-
-
-
-
+		<div align="center" style="margin-top: 15px;"><button style="height:28px; font-size:12px" onClick="javascript:location.href='/bilibili/Houtai.sf?s=${s}';">下一页</button></div>
 	</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	<div class="right noneBox" id="li011">
 		<div class="right01"><img src="<%=request.getContextPath()%>/static/Houtai/images/04.gif" /> 用户信息查询 &gt; <span>组合条件查询</span></div>
-
 		 
-		请输入要查询的内容:<input type="text" id="usertext" placeholder="根据用户名查询" >  <input type="button" id="ajaxbutton1"  value="查询">
-		
-		<br>
-		
-          
-		<div id="chaxunqu"></div>
+		<div style="padding: 20px;">
+			请输入要查询的内容:<input type="text" id="usertext" placeholder="根据用户名查询" style="width: 200px; margin-right: 10px;"> 
+			<input type="button" id="ajaxbutton1" value="查询" style="padding: 5px 15px;">
+		</div>
+		<div id="chaxunqu" style="padding: 0 20px;"></div>
 
-		请输入要查询的内容:<input type="text" id="usertext2" placeholder="根据手机查询" >  <input type="button" id="ajaxbutton2"  value="查询">
-		
-		
-		<br>
-          
-		<div id="chaxunqu2"></div>
-
-		
+		<div style="padding: 0 20px 20px;">
+			请输入要查询的内容:<input type="text" id="usertext2" placeholder="根据手机查询" style="width: 200px; margin-right: 10px;"> 
+			<input type="button" id="ajaxbutton2" value="查询" style="padding: 5px 15px;">
+		</div>
+		<div id="chaxunqu2" style="padding: 0 20px;"></div>
 	</div>
+	
 	<div class="right noneBox" id="li012">
 		<div class="right01"><img src="<%=request.getContextPath()%>/static/Houtai/images/04.gif" /> 用户密码管理 &gt; <span>找回密码</span></div>
 	</div>
+	
 	<div class="right noneBox" id="li013">
 		<div class="right01"><img src="<%=request.getContextPath()%>/static/Houtai/images/04.gif" /> 用户密码管理 &gt; <span>更改密码</span></div>
 	</div>
 
 	<div class="right noneBox" id="li010">
-
 		<div class="right01"><img src="<%=request.getContextPath()%>/static/Houtai/images/04.gif" /> 用户信息查询 &gt; <span>精确查询</span></div>
 		<table width="100%" height="100%" border="0" cellspacing="0" cellpadding="3">
-
-
 			<tr>
 				<td height="100%" valign="top">
 					<div style="overflow:auto;height:100%; width:100%">
@@ -483,11 +393,12 @@ function show_menuC(){
 									<TD align="center">${list.userPhone}</TD>
 									<TD align="center">${list.userAddress}</TD>
 									<TD align="center">${list.userState }</TD>
-
-									<TD width="160" align="center"><BUTTON style="height:21px; font-size:12px"
-																		   onClick="javascript:if (confirm('查看该信息？')) location.href='static/Xinxi.jsp?id=${list.userID}';else return;">查看</BUTTON>
-										<BUTTON style="height:21px; font-size:12px" onClick="javascript:if (confirm('编辑该信息？')) location.href='static/Xinxi.jsp?id=${list.userID}';else return;">编辑
-										</BUTTON> <BUTTON style="height:21px; font-size:12px" onClick="javascript:if (confirm('通过审核？')) location.href='static/Xinxi.jsp?id=${list.userID}';else return;">审核</BUTTON></TD>
+									<TD width="160" align="center">
+										<button style="height:28px; font-size:12px"
+										   onClick="javascript:if (confirm('查看该信息？')) location.href='static/Xinxi.jsp?id=${list.userID}';else return;">查看</button>
+										<button style="height:28px; font-size:12px" onClick="javascript:if (confirm('编辑该信息？')) location.href='static/Xinxi.jsp?id=${list.userID}';else return;">编辑</button> 
+										<button style="height:28px; font-size:12px" onClick="javascript:if (confirm('通过审核？')) location.href='static/Xinxi.jsp?id=${list.userID}';else return;">审核</button>
+									</TD>
 								</TR>
 							</c:forEach>
 						</table>
@@ -512,18 +423,8 @@ function show_menuC(){
             <%--alert(echo);--%>
             <%--}--%>
             <%--});--%>
-
 		</script>
-
-
-
 	</div>
-
-
-
-
 </div>
-	
-
 </body>
 </html>
