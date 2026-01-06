@@ -72,10 +72,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 										class="control-group" id="mingzhi_input">
 										<div class="input_add_long_background">
 											<input class="register_input" type="text" id="mingzhi"
-												   name="mingzhi" maxLength="50">
+												   name="mingzhi" maxLength="20">
 										</div>
 
-									</span> <label class="tips">请输入您的昵称</label>
+									</span> <label class="tips">请输入您的昵称（最多20个字符）</label>
 								</div>
 
 
@@ -90,7 +90,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 
 
-									</span> <label class="tips">请输入您的性别</label>
+									</span> <label class="tips">请选择您的性别</label>
 								</div>
 
 
@@ -100,11 +100,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									<label class="required title">个人简介</label> <span
 										class="control-group" id="showme_input">
 
-											<div><textarea  rows="3" name="showme" id="showme" cols="50"></textarea></div>
+											<div><textarea  rows="3" name="showme" id="showme" cols="50" maxLength="100"></textarea></div>
 
 
 
-									</span> <label class="tips">请输入您的简介</label>
+									</span> <label class="tips">请输入您的简介（最多100个字符）</label>
 								</div>
 
 
@@ -208,6 +208,21 @@ function check() {
   if($('#mobile').val()=='' || !isMobilePhone($('#mobile').val())) {            
 	  showTooltips('mobile_input','手机号码不正确');
 	  ckh_result = false;
+  }
+  // 检查昵称是否为空
+  if($('#mingzhi').val() == '') {
+	showTooltips('mingzhi_input','昵称不能为空');
+	ckh_result = false;
+  }
+  // 检查昵称长度
+  if($('#mingzhi').val().length > 20) {
+	showTooltips('mingzhi_input','昵称长度不能超过20个字符');
+	ckh_result = false;
+  }
+  // 检查个人简介长度
+  if($('#showme').val().length > 100) {
+	showTooltips('showme_input','个人简介长度不能超过100个字符');
+	ckh_result = false;
   }
   if ($('#code').val() == '' || $('#code').val().length !=6) {
 	showTooltips('code_input','验证码不正确');
